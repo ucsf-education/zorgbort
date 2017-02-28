@@ -12,6 +12,7 @@
     "botkit": "^0.5.1",
     "cleverbot.io": "^1.0.4",
     "dotenv": "^4.0.0",
+    "github": "^9.0.0",
     "huh": "^2.0.1"
   },
   "engines": {
