@@ -13,5 +13,8 @@
     "cleverbot.io": "^1.0.4",
     "dotenv": "^4.0.0",
     "huh": "^2.0.1"
+  },
+  "engines": {
+    "node": "6"
   }
 }

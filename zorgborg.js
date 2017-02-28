@@ -1,6 +1,3 @@
-/*
-  token=<MY TOKEN> node index.js
-*/
 require('dotenv').config();
 if (!process.env.SLACK_TOKEN) {
     console.log('Error: Specify SLACK_TOKEN in environment');
