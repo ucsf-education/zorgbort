@@ -8,4 +8,10 @@
   },
   "author": "Ilios Team (info@iliosproject.org)",
   "license": "MIT",
+  "dependencies": {
+    "botkit": "^0.5.1",
+    "cleverbot.io": "^1.0.4",
+    "dotenv": "^4.0.0",
+    "huh": "^2.0.1"
+  }
 }
