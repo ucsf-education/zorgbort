@@ -1,1 +1,1 @@
-worker: node zorgborg.js
+worker: npm start

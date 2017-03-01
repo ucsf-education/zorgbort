@@ -9,13 +9,14 @@
 4. add a `.env` file with:
 ```bash
 SLACK_TOKEN="TOKEN"
-CLEVER_BOT_USER="USER"
-CLEVER_BOT_API_KEY="API_KEY"
+GITHUB_TOKEN="TOKEN"
 ```
-5. Run ZORBORT with `node index.js`
+5. Run ZORBORT with `npm start`
 
 
 ## Deploying to heroku
 1. Install the heroku CLI (`brew install heroku`)
 2. `heroku create`
 3. `git push heroku master`
+4. `heroku config:set SLACK_TOKEN="TOKEN"`
+5. `heroku config:set GITHUB_TOKEN="TOKEN"`
