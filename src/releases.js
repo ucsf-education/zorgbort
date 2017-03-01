@@ -1,3 +1,4 @@
+'use strict';
 const github = require('../lib/github.js');
 const RSVP = require('rsvp');
 
@@ -9,7 +10,7 @@ const releaseList = repo => {
       owner: 'ilios',
       repo
     }).then(response => {
-      let names = response.data.map(obj => obj.name);
+      const names = response.data.map(obj => obj.name);
       resolve(names);
     }).catch(err => {
       console.error(`error: ${err}`);
@@ -25,5 +26,5 @@ const listFrontendReleases = (bot, message) => {
 };
 
 module.exports = bot => {
-  bot.hears('frontend releases','direct_message,direct_mention,mention', listFrontendReleases);
+  bot.hears('frontend releases', 'direct_message,direct_mention,mention', listFrontendReleases);
 };
