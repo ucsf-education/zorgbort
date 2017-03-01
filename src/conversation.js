@@ -81,9 +81,10 @@ const defaultExcuse = (bot, message) => {
   bot.reply(message, `Sorry, I don't know how to _${msg}_. It must be *${reason}!*`);
 };
 
+const mention = ['direct_message','direct_mention','mention'];
 module.exports = bot => {
-  bot.hears(['hello', 'hi', 'howdy', 'sup', 'howzit'], hi);
-  bot.hears(['shutdown', 'powerdown'], shutdown);
-  bot.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'], uptime);
-  bot.hears('','direct_message,direct_mention,mention', defaultExcuse);
+  bot.hears(['hello', 'hi', 'howdy', 'sup', 'howzit'], mention, hi);
+  bot.hears(['shutdown', 'powerdown'], mention, shutdown);
+  bot.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'], mention, uptime);
+  bot.hears('','', mention, defaultExcuse);
 };
