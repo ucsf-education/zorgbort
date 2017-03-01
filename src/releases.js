@@ -1,9 +1,9 @@
 const github = require('../lib/github.js');
 
-const list = callback => {
+const releaseList = (repo, callback) => {
   return github.repos.getReleases({
     owner: 'ilios',
-    repo: 'frontend'
+    repo
   }, (err, response) => {
     let titles = response.data.map(obj => {
       return obj.name;
@@ -11,6 +11,17 @@ const list = callback => {
     callback(err, titles);
   });
 };
-module.exports = {
-  list
+
+const listFrontendReleases = (bot, message) => {
+  releaseList('frontend', (err, response) => {
+    if (!err) {
+      bot.reply(message, response.join(', '));
+    } else {
+      console.error(`cleverbot error: ${err}`);
+    }
+  });
+};
+
+module.exports = bot => {
+  bot.hears('list frontend releases','direct_message,direct_mention,mention', listFrontendReleases);
 };
