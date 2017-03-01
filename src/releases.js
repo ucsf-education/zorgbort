@@ -26,5 +26,5 @@ const listFrontendReleases = (bot, message) => {
 };
 
 module.exports = bot => {
-  bot.hears('frontend releases','direct_message,direct_mention,mention', listFrontendReleases);
+  bot.hears('frontend releases', 'direct_message,direct_mention,mention', listFrontendReleases);
 };
