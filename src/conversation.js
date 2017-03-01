@@ -80,5 +80,5 @@ module.exports = bot => {
   bot.hears(['hello', 'hi', 'howdy', 'sup', 'howzit'], mention, hi);
   bot.hears(['shutdown', 'powerdown'], mention, shutdown);
   bot.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'], mention, uptime);
-  bot.hears('','', mention, defaultExcuse);
+  bot.hears('', mention, defaultExcuse);
 };
