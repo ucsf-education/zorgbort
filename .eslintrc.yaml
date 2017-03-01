@@ -1,0 +1,18 @@
+{
+  env: {
+    node: true,
+  },
+  extends: eslint:recommended,
+  parserOptions: {
+    ecmaVersion: 8,
+  },
+  rules: {
+    comma-dangle: [2, only-multiline],
+    indent: [2, 2], # two-space indentation
+    no-console: [2, { allow: [warn, error] }],
+    prefer-const: 2,
+    quotes: [2, single],
+    semi: 2, # require semi-colons
+    strict: [2, global]
+  }
+}

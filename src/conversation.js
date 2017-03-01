@@ -1,3 +1,4 @@
+'use strict';
 /*
   Many thanks to https://github.com/howdyai/botkit/blob/master/slack_bot.js
   Where most of this was stolen from
@@ -25,7 +26,7 @@ const shutdown = (bot, message) => {
       {
         pattern: bot.utterances.yes,
         callback: function(response, convo) {
-          convo.say("Alright Sir, if you'll not be needing me, I'll close down for awhile");
+          convo.say('Alright Sir, if you\'ll not be needing me, I\'ll close down for awhile');
           convo.next();
           setTimeout(function() {
             process.exit();
@@ -45,7 +46,7 @@ const shutdown = (bot, message) => {
 };
 
 const uptime = (bot, message) => {
-  let formatUptime = function(uptime) {
+  const formatUptime = function(uptime) {
     var unit = 'second';
     if (uptime > 60) {
       uptime = uptime / 60;
@@ -70,8 +71,8 @@ const uptime = (bot, message) => {
 };
 
 const defaultExcuse = (bot, message) => {
-  let msg = message.text;
-  let reason = excuse.get('en');
+  const msg = message.text;
+  const reason = excuse.get('en');
   bot.reply(message, `Sorry, I don't know how to _${msg}_. It must be *${reason}!*`);
 };
 
