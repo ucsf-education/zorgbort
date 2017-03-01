@@ -1,5 +1,6 @@
-# ZORGBORT (and ilios bot)
+# ZORGBORT (an ilios bot)
 
+Zorgbort is going to make common tasks easier to do.
 
 ## Running Locally:
 
