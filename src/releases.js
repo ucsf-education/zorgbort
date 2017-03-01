@@ -1,27 +1,29 @@
 const github = require('../lib/github.js');
+const RSVP = require('rsvp');
 
-const releaseList = (repo, callback) => {
-  return github.repos.getReleases({
-    owner: 'ilios',
-    repo
-  }, (err, response) => {
-    let titles = response.data.map(obj => {
-      return obj.name;
+const { Promise } = RSVP;
+
+const releaseList = repo => {
+  return new Promise(resolve => {
+    github.repos.getReleases({
+      owner: 'ilios',
+      repo
+    }).then(response => {
+      let names = response.data.map(obj => obj.name);
+      resolve(names);
+    }).catch(err => {
+      console.error(`error: ${err}`);
     });
-    callback(err, titles);
   });
+
 };
 
 const listFrontendReleases = (bot, message) => {
-  releaseList('frontend', (err, response) => {
-    if (!err) {
-      bot.reply(message, response.join(', '));
-    } else {
-      console.error(`cleverbot error: ${err}`);
-    }
+  releaseList('frontend').then(response => {
+    bot.reply(message, response.join(', '));
   });
 };
 
 module.exports = bot => {
-  bot.hears('list frontend releases','direct_message,direct_mention,mention', listFrontendReleases);
+  bot.hears('frontend releases','direct_message,direct_mention,mention', listFrontendReleases);
 };
