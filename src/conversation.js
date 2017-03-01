@@ -26,7 +26,7 @@ const shutdown = (bot, message) => {
       {
         pattern: bot.utterances.yes,
         callback: function(response, convo) {
-          convo.say('Alright Sir, if you\'ll not be needing me, I\'ll close down for awhile');
+          convo.say("Alright Sir, if you'll not be needing me, I'll close down for awhile");
           convo.next();
           setTimeout(function() {
             process.exit();
