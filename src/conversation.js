@@ -16,13 +16,7 @@ const hi = (bot, message) => {
       bot.botkit.log('Failed to add emoji reaction :(', err);
     }
   });
-  bot.storage.users.get(message.user, function(err, user) {
-    if (user && user.name) {
-      bot.reply(message, 'Hello ' + user.name + '!!');
-    } else {
-      bot.reply(message, 'Hello.');
-    }
-  });
+  bot.reply(message, 'Hello.');
 };
 
 const shutdown = (bot, message) => {
