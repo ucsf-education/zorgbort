@@ -1,4 +1,4 @@
-# ZORGBORT (an ilios bot)
+# ZORGBORT (an ilios bot) [![Build Status](https://travis-ci.org/ucsf-ckm/zorgbort.svg?branch=master)](https://travis-ci.org/ucsf-ckm/zorgbort)
 
 Zorgbort is going to make common tasks easier to do.
 
@@ -11,8 +11,10 @@ Zorgbort is going to make common tasks easier to do.
 ```bash
 SLACK_TOKEN="TOKEN"
 GITHUB_TOKEN="TOKEN"
+SSH_KEY_PASSPHRASE=="ZORGBORT Passphrase"
 ```
 5. Run ZORBORT with `npm start`
+5. test ZORBORT with `npm test`
 
 
 ## Deploying to heroku
@@ -21,3 +23,4 @@ GITHUB_TOKEN="TOKEN"
 3. `git push heroku master`
 4. `heroku config:set SLACK_TOKEN="TOKEN"`
 5. `heroku config:set GITHUB_TOKEN="TOKEN"`
+5. `heroku config:set SSH_KEY_PASSPHRASE="ZORGBORT Passphrase"`
