@@ -1,8 +1,5 @@
 'use strict';
 const github = require('../lib/github.js');
-const RSVP = require('rsvp');
-
-const { Promise } = RSVP;
 
 const releaseList = repo => {
   return new Promise(resolve => {
