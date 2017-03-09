@@ -95,4 +95,18 @@ describe('Generate Release Notes', function() {
     const result = await generateReleaseNotes(MockGithub, MockHandlebars, MockFs, 'testowner', 'testrepo', 'Cheddar', 'v1.4');
     assert.equal(result, 'renderedReleaseNotes');
   });
+  it('Fails when there are no tags', async function() {
+    const MockGithub =  {
+      repos: {
+        getTags() {
+          return Promise.resolve({data: []});
+        }
+      },
+    };
+    try {
+      await generateReleaseNotes(MockGithub, MockHandlebars, MockFs, 'testowner', 'testrepo', 'Cheddar', 'v1.4');
+    } catch (e) {
+      assert.equal(e.message, 'testowner:testrepo has no tags.  Add at least one to get started.');
+    }
+  });
 });
