@@ -12,8 +12,10 @@ const fs = require('mz/fs');
 const childProcess = require('mz/child_process');
 const Git = require('nodegit');
 const Github = require('../lib/github');
+const Handlebars = require('handlebars');
 const cheeseName = require('cheese-name');
 const uniqueReleaseName = require('../lib/uniqueReleaseName');
+const generateReleaseNotes = require('../lib/generateReleaseNotes');
 
 const { exec } = childProcess;
 
@@ -69,6 +71,7 @@ const releaseAndTag = async (repo, name, releaseType) => {
   const str = commands.join(';');
   const result = await exec(str);
   const version = result[0].replace(/\n+/g, '');
+  const releaseNotes = await generateReleaseNotes(Github, Handlebars, fs, 'ilios', 'frontend', releaseName, version);
   return {
     version,
     releaseName
