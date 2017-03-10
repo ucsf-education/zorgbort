@@ -165,7 +165,7 @@ const validateRequestAndStartConversation = async (bot, message, owner, repo) =>
 
 const releaseConversation = (bot, message, owner, repo) => {
   bot.startConversation(message, function(err, convo) {
-    convo.ask('Is this a feature or a bugfix release?', [
+    convo.ask(`Is this a feature or a bugfix release for ${owner}:${repo}?`, [
       {
         pattern: '(feature|bugfix)',
         callback: (response, convo) => {
@@ -174,9 +174,16 @@ const releaseConversation = (bot, message, owner, repo) => {
         }
       },
       {
+        pattern: '(stop|cancel|no|holdon|end|quit|die)',
+        callback: (response, convo) => {
+          convo.stop();
+        }
+      },
+      {
         default: true,
         callback: function(response, convo) {
           convo.say("Sorry that's not what I asked...");
+          convo.say("You can say 'feature', 'bugfix' or 'cancel'");
           convo.repeat();
           convo.next();
         }
