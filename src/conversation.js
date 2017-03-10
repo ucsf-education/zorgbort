@@ -20,6 +20,18 @@ const hi = (bot, message) => {
   bot.reply(message, 'Hello.');
 };
 
+const indirectHi = (bot, message) => {
+  bot.api.reactions.add({
+    timestamp: message.ts,
+    channel: message.channel,
+    name: 'wave',
+  }, function(err) {
+    if (err) {
+      bot.botkit.log('Failed to add emoji reaction :(', err);
+    }
+  });
+};
+
 const shutdown = (bot, message) => {
   bot.startConversation(message, function(err, convo) {
     convo.ask('Are you sure you want me to shutdown?', [
@@ -79,6 +91,7 @@ const defaultExcuse = (bot, message) => {
 const mention = ['direct_message', 'direct_mention', 'mention'];
 module.exports = bot => {
   bot.hears(['hello', 'hi', 'howdy', 'sup', 'howzit'], mention, hi);
+  bot.hears(['hello', 'hi', 'howdy', 'sup', 'howzit', 'good morning'], 'message_received', indirectHi);
   bot.hears(['shutdown', 'powerdown'], mention, shutdown);
   bot.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'], mention, uptime);
   bot.hears('', mention, defaultExcuse);
