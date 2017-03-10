@@ -205,13 +205,13 @@ const releaseConversation = (bot, message, owner, repo) => {
   });
 };
 
-// module.exports = bot => {
-//   bot.hears('releaase frontend', 'direct_message,direct_mention,mention', (bot, message) => {
-//     const owner = 'ilios';
-//     const repo = 'frontend';
-//     releaseConversation(bot, message, owner, repo);
-//   });
-// };
+module.exports = bot => {
+  bot.hears('releaase the frontend', 'direct_message,direct_mention,mention', (bot, message) => {
+    const owner = 'ilios';
+    const repo = 'frontend';
+    validateRequestAndStartConversation(bot, message, owner, repo);
+  });
+};
 
 module.exports = bot => {
   bot.hears('test release', 'direct_message,direct_mention,mention', (bot, message) => {
