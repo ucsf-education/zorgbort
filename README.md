@@ -12,6 +12,7 @@ Zorgbort is going to make common tasks easier to do.
 SLACK_TOKEN="TOKEN"
 GITHUB_TOKEN="TOKEN"
 SSH_KEY_PASSPHRASE=="ZORGBORT Passphrase"
+VALID_RELEASE_USERS=="SLACKID,SLACKID2"
 ```
 5. Run ZORBORT with `npm start`
 5. test ZORBORT with `npm test`
@@ -24,6 +25,7 @@ SSH_KEY_PASSPHRASE=="ZORGBORT Passphrase"
 4. `heroku config:set SLACK_TOKEN="TOKEN"`
 5. `heroku config:set GITHUB_TOKEN="TOKEN"`
 5. `heroku config:set SSH_KEY_PASSPHRASE="ZORGBORT Passphrase"`
+5. `heroku config:set VALID_RELEASE_USERS="SLACKID,SLACKID2"`
 
 ## Acknowledgments
 
