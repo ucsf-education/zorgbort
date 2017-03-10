@@ -60,7 +60,7 @@ describe('Generate Release Notes', function() {
     compile(string){
       assert.equal(string, 'RELEASENOTES');
 
-      return ({pullRequests, bugs, enhancements, remaining, releaseName, releaseTag, currentTag}) => {
+      return ({pullRequests, bugs, enhancements, remaining, releaseName, releaseTag, currentTag, repositoryUrl}) => {
         assert.equal(pullRequests.length, 1);
         assert.equal(pullRequests[0].title, issues.sixth.title);
 
@@ -77,6 +77,7 @@ describe('Generate Release Notes', function() {
         assert.equal(releaseName, 'Cheddar');
         assert.equal(releaseTag, 'v1.4');
         assert.equal(currentTag, 'v1.0');
+        assert.equal(repositoryUrl, 'https://github.com/testowner/testrepo');
 
         return 'renderedReleaseNotes';
 

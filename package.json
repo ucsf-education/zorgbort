@@ -17,8 +17,10 @@
     "github": "^9.0.0",
     "handlebars": "^4.0.6",
     "huh": "^2.0.1",
+    "moment": "^2.17.1",
     "mz": "^2.6.0",
     "nodegit": "^0.18.0",
+    "rimraf": "^2.6.1",
     "uniqueid": "^1.0.0"
   },
   "engines": {
