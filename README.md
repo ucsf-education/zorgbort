@@ -1,5 +1,7 @@
 # ZORGBORT (an ilios bot) [![Build Status](https://travis-ci.org/ucsf-ckm/zorgbort.svg?branch=master)](https://travis-ci.org/ucsf-ckm/zorgbort)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/ucsf-ckm/zorgbort.svg)](https://greenkeeper.io/)
+
 Zorgbort is going to make common tasks easier to do.
 
 ## Running Locally:
