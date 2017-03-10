@@ -6,6 +6,12 @@ if (!process.env.SSH_KEY_PASSPHRASE) {
 
 const SSH_KEY_PASSPHRASE = process.env.SSH_KEY_PASSPHRASE;
 
+if (!process.env.VALID_RELEASE_USERS) {
+  throw new Error('Error: Specify comma seperated list of VALID_RELEASE_USERS in environment');
+}
+
+const VALID_RELEASE_USERS = process.env.VALID_RELEASE_USERS;
+
 const uniqueid = require('uniqueid');
 const getUniqueId = uniqueid(process.pid);
 const fs = require('mz/fs');
@@ -131,6 +137,32 @@ const releaseAndTag = async (owner, repo, releaseType) => {
   };
 };
 
+const validateRequestAndStartConversation = async (bot, message, owner, repo) => {
+  const user = message.user;
+
+  const validUsers = VALID_RELEASE_USERS.split(',');
+  if (validUsers.includes(user)) {
+    releaseConversation(bot, message, owner, repo);
+  } else {
+    const bestname = await new Promise(resolve => {
+      bot.api.users.info({user}, (err, resp) => {
+        if (err) {
+          bot.reply(message, `Error: ${err.message} (stack trace in logs)`);
+          console.error(err);
+        }
+        if (!resp.ok) {
+          resolve('Dave');
+        } else if (resp.user.profile.first_name) {
+          resolve(resp.user.profile.first_name);
+        } else {
+          resolve(resp.user.name);
+        }
+      });
+    });
+    bot.reply(message, `:no_entry: I'm Sorry, ${bestname}, I'm afraid Zorgbort can't do that.`);
+  }
+};
+
 const releaseConversation = (bot, message, owner, repo) => {
   bot.startConversation(message, function(err, convo) {
     convo.ask('Is this a feature or a bugfix release?', [
@@ -185,6 +217,6 @@ module.exports = bot => {
   bot.hears('test release', 'direct_message,direct_mention,mention', (bot, message) => {
     const owner = 'jrjohnson';
     const repo = 'test-releaser';
-    releaseConversation(bot, message, owner, repo);
+    validateRequestAndStartConversation(bot, message, owner, repo);
   });
 };
