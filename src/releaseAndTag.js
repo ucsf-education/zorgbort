@@ -14,6 +14,7 @@ const Github = require('../lib/github');
 const Handlebars = require('handlebars');
 const cheeseName = require('cheese-name');
 const rmdir = require('rimraf');
+const mkdirp = require('mkdirp');
 const moment = require('moment');
 const uniqueReleaseName = require('../lib/uniqueReleaseName');
 const generateReleaseNotes = require('../lib/generateReleaseNotes');
@@ -82,22 +83,16 @@ const commitAndTag = async (dir, name, releaseName) => {
   ], opts);
 };
 
-const createTempDirectory = (name) => {
+const createTempDirectory = async (name) => {
   const appRoot = require('app-root-path');
-  const dir = `/tmp/${name}/` + getUniqueId();
-  if (fs.existsSync(dir)) {
+  const dir = `${appRoot}/tmp/${name}/` + getUniqueId();
+  const exists = await fs.exists(dir);
+  if (exists) {
     throw new Error(`Tried to create directory, but it already exists: ${dir}`);
   }
-  //create our temporary file system in parts
-  dir.split('/').reduce((path, folder) => {
-    path += folder + '/';
-    if (!fs.existsSync(path)){
-      fs.mkdirSync(path);
-    }
-    return path;
-  }, appRoot);
+  mkdirp(dir);
 
-  return appRoot + dir;
+  return dir;
 };
 
 const removeTempDirectory = async (name) => {
@@ -109,7 +104,7 @@ const removeTempDirectory = async (name) => {
 };
 
 const releaseAndTag = async (owner, repo, releaseType) => {
-  const dir = createTempDirectory(repo);
+  const dir = await createTempDirectory(repo);
   await cloneRepository(owner, repo, dir);
 
   const plainVerion = await incrementPackageVersion(dir, releaseType);

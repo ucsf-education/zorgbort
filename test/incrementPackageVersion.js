@@ -3,11 +3,19 @@
 const incrementPackageVersion = require('../lib/incrementPackageVersion');
 const assert = require('assert');
 const fs = require('mz/fs');
+const mkdirp = require('mkdirp');
 const appRoot = require('app-root-path');
 
 describe('Increment Package Version', function() {
   const tmpDir = `${appRoot}/tmp`;
   const filePath = `${tmpDir}/package.json`;
+
+  before('create temporary directory', async function(){
+    const exists = await fs.exists(tmpDir);
+    if (!exists) {
+      await mkdirp(tmpDir);
+    }
+  }),
 
   beforeEach('create package.json file', async function() {
     await fs.writeFile(filePath, JSON.stringify({
