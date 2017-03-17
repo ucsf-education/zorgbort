@@ -1,5 +1,15 @@
 'use strict';
 
+if (!process.env.SSH_PRIVATE_KEY) {
+  throw new Error('Error: Specify SSH_PRIVATE_KEY in environment');
+}
+const SSH_PRIVATE_KEY = process.env.SSH_PRIVATE_KEY;
+
+if (!process.env.SSH_PUBLIC_KEY) {
+  throw new Error('Error: Specify SSH_PUBLIC_KEY in environment');
+}
+const SSH_PUBLIC_KEY = process.env.SSH_PUBLIC_KEY;
+
 if (!process.env.SSH_KEY_PASSPHRASE) {
   throw new Error('Error: Specify SSH_KEY_PASSPHRASE in environment');
 }
@@ -28,17 +38,14 @@ const incrementPackageVersion = require('../lib/incrementPackageVersion');
 
 const cloneRepository = async (owner, repo, target) => {
   const url = `git@github.com:${owner}/${repo}`;
-  const appRoot = require('app-root-path');
-  const sshPublicKeyPath = appRoot + '/ssh-keys/zorgbort.pub';
-  const sshPrivateKeyPath = appRoot + '/ssh-keys/zorgbort';
   const opts = {
     fetchOpts: {
       callbacks: {
-        credentials: function(url, userName) {
-          return Git.Cred.sshKeyNew(
+        credentials: async (url, userName) => {
+          return await Git.Cred.sshKeyMemoryNew(
             userName,
-            sshPublicKeyPath,
-            sshPrivateKeyPath,
+            SSH_PUBLIC_KEY,
+            SSH_PRIVATE_KEY,
             SSH_KEY_PASSPHRASE
           );
         }
@@ -66,17 +73,13 @@ const commitAndTag = async (dir, name, releaseName) => {
   const commit = await repository.createCommit('HEAD', author, author, message, oid, [parent]);
 
   await repository.createTag(commit, name, message);
-
-  const appRoot = require('app-root-path');
-  const sshPublicKeyPath = appRoot + '/ssh-keys/zorgbort.pub';
-  const sshPrivateKeyPath = appRoot + '/ssh-keys/zorgbort';
   const opts = {
     callbacks: {
-      credentials: function(url, userName) {
-        return Git.Cred.sshKeyNew(
+      credentials: async (url, userName) => {
+        return await Git.Cred.sshKeyMemoryNew(
           userName,
-          sshPublicKeyPath,
-          sshPrivateKeyPath,
+          SSH_PUBLIC_KEY,
+          SSH_PRIVATE_KEY,
           SSH_KEY_PASSPHRASE
         );
       }
