@@ -216,15 +216,13 @@ const releaseConversation = (bot, message, owner, repo) => {
 };
 
 module.exports = bot => {
-  bot.hears(['release the frontend', 'frontend release'], 'direct_message,direct_mention,mention', (bot, message) => {
+  const mention = ['direct_message', 'direct_mention', 'mention'];
+  bot.hears(['release the frontend', 'frontend release'], mention, (bot, message) => {
     const owner = 'ilios';
     const repo = 'frontend';
     validateRequestAndStartConversation(bot, message, owner, repo);
   });
-};
-
-module.exports = bot => {
-  bot.hears('test release', 'direct_message,direct_mention,mention', (bot, message) => {
+  bot.hears('test release', mention, (bot, message) => {
     const owner = 'jrjohnson';
     const repo = 'test-releaser';
     validateRequestAndStartConversation(bot, message, owner, repo);
