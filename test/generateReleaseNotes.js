@@ -9,6 +9,8 @@ describe('Generate Release Notes', function() {
     enhancement: {name: 'enhancement'},
     greenkeeper: {name: 'greenkeeper'},
     readyForReview: {name: 'ready for review'},
+    worksForMe: {name: 'wontfix/works for me'},
+    duplicate: {name: 'duplicate'},
   };
   const issues = {
     first: {title: 'first', number: '1', html_url: 'http://example.com', labels:[labels.bug]},
@@ -17,6 +19,8 @@ describe('Generate Release Notes', function() {
     fourth: {title: 'fourth', number: '4', html_url: 'http://example.com', labels:[labels.greenkeeper, labels.bug]},
     fifth: {title: 'fifth', number: '5', html_url: 'http://example.com', labels:[labels.readyForReview]},
     sixth: {title: 'sixth', number: '6', html_url: 'http://example.com', labels:[labels.bug], pull_request: true, user: {login: 'person', html_url: 'ex.com'}},
+    seventh: {title: 'seventh', number: '7', html_url: 'http://example.com', labels:[labels.worksForMe]},
+    eighth: {title: 'eighth', number: '8', html_url: 'http://example.com', labels:[labels.duplicate]},
   };
 
   const MockGithub =  {
@@ -51,6 +55,8 @@ describe('Generate Release Notes', function() {
           issues.fourth,
           issues.fifth,
           issues.sixth,
+          issues.seventh,
+          issues.eighth,
         ]});
       }
     }
