@@ -4,8 +4,8 @@
   "description": "Zorgbort does Iliosy things well",
   "main": "zorgbort.js",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/ucsf-ckm/zorgbort.git"
+    "type": "git",
+    "url": "https://github.com/ucsf-ckm/zorgbort.git"
   },
   "scripts": {
     "start": "node zorgbort.js",
