@@ -168,9 +168,9 @@ const validateRequestAndStartConversation = async (bot, message, owner, repo) =>
 
 const releaseConversation = (bot, message, owner, repo) => {
   bot.startConversation(message, function(err, convo) {
-    convo.ask(`Is this a feature or a bugfix release for ${owner}:${repo}?`, [
+    convo.ask(`Is this a "major", "feature" or "bugfix" release for ${owner}:${repo}?`, [
       {
-        pattern: '(feature|bugfix)',
+        pattern: '(major|feature|bugfix)',
         callback: (response, convo) => {
           convo.say(`Ok, starting ${response.text} release for ${owner}:${repo}`);
           convo.next();
@@ -197,7 +197,13 @@ const releaseConversation = (bot, message, owner, repo) => {
       if (convo.status == 'completed') {
         try {
           const releaseType = convo.extractResponse('releaseType');
-          const npmType = releaseType === 'bugfix'?'patch':'minor';
+          let npmType = 'major';
+          if (releaseType === 'feature') {
+            npmType = 'minor';
+          }
+          if (releaseType === 'bugfix') {
+            npmType = 'patch';
+          }
           const result = await releaseAndTag(owner, repo, npmType);
 
           bot.reply(message, `:rocket: ${owner}:${repo} ${result.version} ${result.releaseName} has been released. :tada:`);
