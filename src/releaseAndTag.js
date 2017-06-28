@@ -222,9 +222,14 @@ module.exports = bot => {
     const repo = 'frontend';
     validateRequestAndStartConversation(bot, message, owner, repo);
   });
-  bot.hears('test release', mention, (bot, message) => {
-    const owner = 'jrjohnson';
-    const repo = 'test-releaser';
+  bot.hears(['release common addon', 'common addon release'], mention, (bot, message) => {
+    const owner = 'ilios';
+    const repo = 'common';
+    validateRequestAndStartConversation(bot, message, owner, repo);
+  });
+  bot.hears(['release lti dashboard', 'lti dashboard release'], mention, (bot, message) => {
+    const owner = 'ilios';
+    const repo = 'lti-app';
     validateRequestAndStartConversation(bot, message, owner, repo);
   });
 };
