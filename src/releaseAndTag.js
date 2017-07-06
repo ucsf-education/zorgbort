@@ -38,6 +38,7 @@ const incrementPackageVersion = require('../lib/incrementPackageVersion');
 
 const cloneRepository = async (owner, repo, target) => {
   const url = `git@github.com:${owner}/${repo}`;
+  console.log(`Cloning ${url} into ${target}`);
   const opts = {
     fetchOpts: {
       callbacks: {
@@ -58,6 +59,7 @@ const cloneRepository = async (owner, repo, target) => {
 
 const commitAndTag = async (dir, name, releaseName) => {
   const message = `${name} ${releaseName}`;
+  console.log(`Commit and tag ${message} in ${dir}`);
 
   // From the examples at https://github.com/nodegit/nodegit/blob/master/examples/
   const repository = await Git.Repository.open(dir);
@@ -72,6 +74,7 @@ const commitAndTag = async (dir, name, releaseName) => {
   const author = Git.Signature.create('Zorgbort', 'info@iliosproject.org', now, 0);
   const commit = await repository.createCommit('HEAD', author, author, message, oid, [parent]);
 
+  console.log(`Create tag ${name} "${message}"`);
   await repository.createTag(commit, name, message);
   const opts = {
     callbacks: {
@@ -86,6 +89,7 @@ const commitAndTag = async (dir, name, releaseName) => {
     }
   };
   const remote = await Git.Remote.lookup(repository, 'origin');
+  console.log('Pushing new tag to origin');
   return await remote.push([
     'refs/heads/master:refs/heads/master',
     `refs/tags/${name}:refs/tags/${name}`,
@@ -93,6 +97,7 @@ const commitAndTag = async (dir, name, releaseName) => {
 };
 
 const createTempDirectory = async (name) => {
+  console.log(`Creating temporary directory for ${name}`);
   const appRoot = require('app-root-path');
   const dir = `${appRoot}/tmp/${name}/` + getUniqueId();
   const exists = await fs.exists(dir);
@@ -100,12 +105,14 @@ const createTempDirectory = async (name) => {
     throw new Error(`Tried to create directory, but it already exists: ${dir}`);
   }
   mkdirp(dir);
+  console.log(`${dir} created`);
 
   return dir;
 };
 
 const removeTempDirectory = async (name) => {
   const dir = `/tmp/${name}/` + getUniqueId();
+  console.log(`Removing temporary directory ${dir}`);
 
   return await rmdir(dir, err => {
     console.error(err);
@@ -113,15 +120,18 @@ const removeTempDirectory = async (name) => {
 };
 
 const releaseAndTag = async (owner, repo, releaseType) => {
+  console.log(`Release and tag ${owner}/${repo} as ${releaseType}`);
   const dir = await createTempDirectory(repo);
   await cloneRepository(owner, repo, dir);
 
-  const plainVerion = await incrementPackageVersion(dir, releaseType);
-  const version = `v${plainVerion}`;
+  const plainVersion = await incrementPackageVersion(dir, releaseType);
+  const version = `v${plainVersion}`;
+  console.log(`${plainVersion} will be called ${version}`);
   const releaseName = await uniqueReleaseName(Github, cheeseName, owner, repo);
   const releaseNotes = await generateReleaseNotes(Github, Handlebars, fs, owner, repo, releaseName, version);
   await commitAndTag(dir, version, releaseName);
   await removeTempDirectory(repo);
+  console.log(`Creating release for ${owner}/${repo} at ${version} as ${releaseName}`);
 
   const release = await Github.repos.createRelease({
     owner,
