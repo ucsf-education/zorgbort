@@ -19,7 +19,7 @@
   "homepage": "https://github.com/ucsf-ckm/zorgbort#readme",
   "dependencies": {
     "app-root-path": "^2.0.1",
-    "botkit": "^0.6.0",
+    "botkit": "^0.7.0",
     "cheese-name": "^1.0.0",
     "dotenv": "^5.0.1",
     "github": "^13.0.1",
