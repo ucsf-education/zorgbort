@@ -1,25 +1,21 @@
 'use strict';
 const github = require('../lib/github.js');
 
-const releaseList = repo => {
-  return new Promise(resolve => {
-    github.repos.getReleases({
-      owner: 'ilios',
-      repo
-    }).then(response => {
-      const names = response.data.map(obj => obj.name);
-      resolve(names);
-    }).catch(err => {
-      console.error(`error: ${err}`);
-    });
-  });
-
+const releaseList = async (owner, repo) => {
+  try {
+    return await github.paginate(
+      'GET /repos/:owner/:repo/releases',
+      { owner, repo },
+      response => response.data.map(release => release.name));
+  } catch (e) {
+    console.error(`error unable to fetch releases: ${e}`);
+    return [];
+  }
 };
 
-const listFrontendReleases = (bot, message) => {
-  releaseList('frontend').then(response => {
-    bot.reply(message, response.join(', '));
-  });
+const listFrontendReleases = async (bot, message) => {
+  const releases = await releaseList('ilios', 'frontend');
+  bot.reply(message, releases.join(', '));
 };
 
 module.exports = bot => {
