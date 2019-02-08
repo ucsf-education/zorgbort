@@ -18,11 +18,11 @@
   },
   "homepage": "https://github.com/ucsf-ckm/zorgbort#readme",
   "dependencies": {
+    "@octokit/rest": "^16.15.0",
     "app-root-path": "^2.0.1",
     "botkit": "^0.7.2",
     "cheese-name": "^1.0.0",
     "dotenv": "^6.2.0",
-    "github": "^13.0.1",
     "handlebars": "^4.0.6",
     "huh": "^2.0.1",
     "mkdirp": "^0.5.1",
