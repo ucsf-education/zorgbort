@@ -3,21 +3,16 @@ const uniqueReleaseName = require('../lib/uniqueReleaseName');
 const assert = require('assert');
 
 describe('Unique Release Name', function() {
-  const MockGithub =  {
-    repos: {
-      getReleases({owner, repo}) {
-        assert.equal(owner, 'testowner');
-        assert.equal(repo, 'testrepo');
-
-        return Promise.resolve({data: [{name: 'first release'}, {name: 'second release'}]});
-      }
-    }
+  const MockReleaseList = (owner, repo) => {
+    assert.equal(owner, 'testowner');
+    assert.equal(repo, 'testrepo');
+    return ['first release', 'second release'];
   };
   it('Works', async function() {
     const MockNamer = () => {
       return 'test';
     };
-    const result = await uniqueReleaseName(MockGithub, MockNamer, 'testowner', 'testrepo');
+    const result = await uniqueReleaseName(MockReleaseList, MockNamer, 'testowner', 'testrepo');
     assert.equal(result, 'test');
   });
   it('Iterates when names match', async function() {
@@ -25,16 +20,16 @@ describe('Unique Release Name', function() {
     const MockNamer = () => {
       count++;
       if (1 === count) {
-        return 'first';
+        return 'first release';
       }
       if (2 === count) {
-        return 'second';
+        return 'second release';
       }
       if (3 === count) {
         return 'test';
       }
     };
-    const result = await uniqueReleaseName(MockGithub, MockNamer, 'testowner', 'testrepo');
+    const result = await uniqueReleaseName(MockReleaseList, MockNamer, 'testowner', 'testrepo');
     assert.equal(result, 'test');
     assert.equal(count, 3);
   });
@@ -45,7 +40,7 @@ describe('Unique Release Name', function() {
       return 'first';
     };
     try {
-      await uniqueReleaseName(MockGithub, MockNamer, 'testowner', 'testrepo');
+      await uniqueReleaseName(MockReleaseList, MockNamer, 'testowner', 'testrepo');
     } catch (e) {
       assert.ok(e.message.includes('Tried'));
       assert.ok(e.message.includes('imes to get a unique release but failed.'));

@@ -26,25 +26,28 @@ describe('Increment Package Version', function() {
     await fs.unlink(filePath);
   });
   it('Increments Major', async function() {
-    const result = await incrementPackageVersion(tmpDir, 'major');
+    const { currentVersion, nextVersion } = await incrementPackageVersion(tmpDir, 'major');
     const targetVersion = '2.0.0';
-    assert.equal(result, targetVersion);
+    assert.equal(currentVersion, '1.0.0');
+    assert.equal(nextVersion, targetVersion);
     const json = await fs.readFile(filePath);
     const data = JSON.parse(json);
     assert.equal(data.version, targetVersion);
   });
   it('Increments Minor', async function() {
-    const result = await incrementPackageVersion(tmpDir, 'minor');
+    const { currentVersion, nextVersion } = await incrementPackageVersion(tmpDir, 'minor');
     const targetVersion = '1.1.0';
-    assert.equal(result, targetVersion);
+    assert.equal(currentVersion, '1.0.0');
+    assert.equal(nextVersion, targetVersion);
     const json = await fs.readFile(filePath);
     const data = JSON.parse(json);
     assert.equal(data.version, targetVersion);
   });
   it('Increments Patch', async function() {
-    const result = await incrementPackageVersion(tmpDir, 'patch');
+    const { currentVersion, nextVersion } = await incrementPackageVersion(tmpDir, 'patch');
     const targetVersion = '1.0.1';
-    assert.equal(result, targetVersion);
+    assert.equal(currentVersion, '1.0.0');
+    assert.equal(nextVersion, targetVersion);
     const json = await fs.readFile(filePath);
     const data = JSON.parse(json);
     assert.equal(data.version, targetVersion);
