@@ -17,7 +17,7 @@ if (!process.env.SSH_KEY_PASSPHRASE) {
 const SSH_KEY_PASSPHRASE = process.env.SSH_KEY_PASSPHRASE;
 
 if (!process.env.VALID_RELEASE_USERS) {
-  throw new Error('Error: Specify comma seperated list of VALID_RELEASE_USERS in environment');
+  throw new Error('Error: Specify comma separated list of VALID_RELEASE_USERS in environment');
 }
 
 const VALID_RELEASE_USERS = process.env.VALID_RELEASE_USERS;
@@ -27,14 +27,14 @@ const getUniqueId = uniqueid(process.pid);
 const fs = require('mz/fs');
 const Git = require('nodegit');
 const Github = require('../lib/github');
-const Handlebars = require('handlebars');
 const cheeseName = require('cheese-name');
 const rmdir = require('rimraf');
 const mkdirp = require('mkdirp');
 const moment = require('moment');
 const uniqueReleaseName = require('../lib/uniqueReleaseName');
-const generateReleaseNotes = require('../lib/generateReleaseNotes');
+const { generateReleaseNotes } = require('generate-github-release-notes');
 const incrementPackageVersion = require('../lib/incrementPackageVersion');
+const { releaseList } = require('../lib/releaseList');
 
 const cloneRepository = async (owner, repo, target) => {
   const url = `git@github.com:${owner}/${repo}`;
@@ -124,11 +124,11 @@ const releaseAndTag = async (owner, repo, releaseType) => {
   const dir = await createTempDirectory(repo);
   await cloneRepository(owner, repo, dir);
 
-  const plainVersion = await incrementPackageVersion(dir, releaseType);
-  const version = `v${plainVersion}`;
-  console.log(`${plainVersion} will be called ${version}`);
-  const releaseName = await uniqueReleaseName(Github, cheeseName, owner, repo);
-  const releaseNotes = await generateReleaseNotes(Github, Handlebars, fs, owner, repo, releaseName, version);
+  const { nextVersion, currentVersion } = await incrementPackageVersion(dir, releaseType);
+  const version = `v${nextVersion}`;
+  console.log(`${nextVersion} will be called ${version}`);
+  const releaseName = await uniqueReleaseName(releaseList, cheeseName, owner, repo);
+  const releaseNotes = await generateReleaseNotes(Github, owner, repo, `v${currentVersion}`, version);
   await commitAndTag(dir, version, releaseName);
   await removeTempDirectory(repo);
   console.log(`Creating release for ${owner}/${repo} at ${version} as ${releaseName}`);
@@ -139,14 +139,14 @@ const releaseAndTag = async (owner, repo, releaseType) => {
     tag_name: version,
     name: releaseName,
     body: releaseNotes,
-    draft: true
+    draft: true,
+    prerelease: false,
   });
-  const releaseUrl = release.data.html_url;
 
   return {
     version,
     releaseName,
-    releaseUrl
+    releaseUrl: release.data.html_url
   };
 };
 
