@@ -119,7 +119,7 @@ const removeTempDirectory = async (name) => {
   });
 };
 
-const releaseAndTag = async (owner, repo, releaseType) => {
+const releaseAndTag = async (owner, repo, releaseType, namer) => {
   console.log(`Release and tag ${owner}/${repo} as ${releaseType}`);
   const dir = await createTempDirectory(repo);
   await cloneRepository(owner, repo, dir);
@@ -127,7 +127,7 @@ const releaseAndTag = async (owner, repo, releaseType) => {
   const { nextVersion, currentVersion } = await incrementPackageVersion(dir, releaseType);
   const version = `v${nextVersion}`;
   console.log(`${nextVersion} will be called ${version}`);
-  const releaseName = await uniqueReleaseName(releaseList, cheeseName, owner, repo);
+  const releaseName = await uniqueReleaseName(nextVersion, releaseList, namer, owner, repo);
   const releaseNotes = await generateReleaseNotes(Github, owner, repo, `v${currentVersion}`, version);
   await commitAndTag(dir, version, releaseName);
   await removeTempDirectory(repo);
@@ -150,12 +150,12 @@ const releaseAndTag = async (owner, repo, releaseType) => {
   };
 };
 
-const validateRequestAndStartConversation = async (bot, message, owner, repo) => {
+const validateRequestAndStartConversation = async (bot, message, owner, repo, namer) => {
   const user = message.user;
 
   const validUsers = VALID_RELEASE_USERS.split(',');
   if (validUsers.includes(user)) {
-    releaseConversation(bot, message, owner, repo);
+    releaseConversation(bot, message, owner, repo, namer);
   } else {
     const bestname = await new Promise(resolve => {
       bot.api.users.info({user}, (err, resp) => {
@@ -176,7 +176,7 @@ const validateRequestAndStartConversation = async (bot, message, owner, repo) =>
   }
 };
 
-const releaseConversation = (bot, message, owner, repo) => {
+const releaseConversation = (bot, message, owner, repo, namer) => {
   bot.startConversation(message, function(err, convo) {
     convo.ask(`Is this a "major", "feature" or "bugfix" release for ${owner}:${repo}?`, [
       {
@@ -214,7 +214,7 @@ const releaseConversation = (bot, message, owner, repo) => {
           if (releaseType === 'bugfix') {
             npmType = 'patch';
           }
-          const result = await releaseAndTag(owner, repo, npmType);
+          const result = await releaseAndTag(owner, repo, npmType, namer);
 
           bot.reply(message, `:rocket: ${owner}:${repo} ${result.version} ${result.releaseName} has been released. :tada:`);
           bot.reply(message, `Please review and published the release notes at ${result.version} at ${result.releaseUrl}`);
@@ -236,16 +236,18 @@ module.exports = bot => {
   bot.hears(['release the frontend', 'frontend release'], mention, (bot, message) => {
     const owner = 'ilios';
     const repo = 'frontend';
-    validateRequestAndStartConversation(bot, message, owner, repo);
+    validateRequestAndStartConversation(bot, message, owner, repo, cheeseName);
   });
   bot.hears(['release common addon', 'common addon release'], mention, (bot, message) => {
     const owner = 'ilios';
     const repo = 'common';
-    validateRequestAndStartConversation(bot, message, owner, repo);
+    const namer = version => `Ilios Common ${version}`;
+    validateRequestAndStartConversation(bot, message, owner, repo, namer);
   });
   bot.hears(['release lti dashboard', 'lti dashboard release'], mention, (bot, message) => {
     const owner = 'ilios';
     const repo = 'lti-app';
-    validateRequestAndStartConversation(bot, message, owner, repo);
+    const namer = version => `Dashboard ${version}`;
+    validateRequestAndStartConversation(bot, message, owner, repo, namer);
   });
 };

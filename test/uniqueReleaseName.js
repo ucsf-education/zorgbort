@@ -9,11 +9,11 @@ describe('Unique Release Name', function() {
     return ['first release', 'second release'];
   };
   it('Works', async function() {
-    const MockNamer = () => {
-      return 'test';
+    const MockNamer = version => {
+      return `test ${version}`;
     };
-    const result = await uniqueReleaseName(MockReleaseList, MockNamer, 'testowner', 'testrepo');
-    assert.equal(result, 'test');
+    const result = await uniqueReleaseName('v1.3', MockReleaseList, MockNamer, 'testowner', 'testrepo');
+    assert.equal(result, 'test v1.3');
   });
   it('Iterates when names match', async function() {
     let count = 0;
@@ -29,7 +29,7 @@ describe('Unique Release Name', function() {
         return 'test';
       }
     };
-    const result = await uniqueReleaseName(MockReleaseList, MockNamer, 'testowner', 'testrepo');
+    const result = await uniqueReleaseName('v1.3', MockReleaseList, MockNamer, 'testowner', 'testrepo');
     assert.equal(result, 'test');
     assert.equal(count, 3);
   });
@@ -40,7 +40,7 @@ describe('Unique Release Name', function() {
       return 'first';
     };
     try {
-      await uniqueReleaseName(MockReleaseList, MockNamer, 'testowner', 'testrepo');
+      await uniqueReleaseName('v1.3', MockReleaseList, MockNamer, 'testowner', 'testrepo');
     } catch (e) {
       assert.ok(e.message.includes('Tried'));
       assert.ok(e.message.includes('imes to get a unique release but failed.'));
