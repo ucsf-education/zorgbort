@@ -250,4 +250,10 @@ module.exports = bot => {
     const namer = version => `Dashboard ${version}`;
     validateRequestAndStartConversation(bot, message, owner, repo, namer);
   });
+  bot.hears(['release lti server', 'lti server release', 'release lti-server', 'lti-server release'], mention, (bot, message) => {
+    const owner = 'ilios';
+    const repo = 'lti-server';
+    const namer = version => `${version}`;
+    validateRequestAndStartConversation(bot, message, owner, repo, namer);
+  });
 };
