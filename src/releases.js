@@ -2,22 +2,83 @@
 
 const { releaseList } = require('../lib/releaseList');
 
-const listFrontendReleases = async (bot, message) => {
-  const releases = await releaseList('ilios', 'frontend');
-  bot.reply(message, releases.join(', '));
+const releaseListChooseProject = 'release-list-project';
+
+const listReleases = async (bot, message) => {
+  bot.reply(message, {
+    text: 'Ok, I will look up a release list for you',
+    attachments: [
+      {
+        title: 'Which project?',
+        callback_id: releaseListChooseProject,
+        attachment_type: 'default',
+        actions: [
+          {
+            'name': 'frontend',
+            'text': 'Ilios Frontend',
+            'value': 'frontend',
+            'type': 'button',
+          },
+          {
+            'name': 'common',
+            'text': 'Ilios Common Addon',
+            'value': 'common',
+            'type': 'button',
+          },
+          {
+            'name': 'lti-server',
+            'text': 'Ilios LTI Server',
+            'value': 'lti-server',
+            'type': 'button',
+          },
+          {
+            'name': 'lti-dashboard',
+            'text': 'Ilios LTI Dashboard',
+            'value': 'lti-dashboard',
+            'type': 'button',
+          },
+        ]
+      }
+    ]
+  });
 };
 
-const listCommonReleases = async (bot, message) => {
-  const releases = await releaseList('ilios', 'common');
-  bot.reply(message, releases.join(', '));
-};
-const listLtiServerReleases = async (bot, message) => {
-  const releases = await releaseList('ilios', 'lti-server');
-  bot.reply(message, releases.join(', '));
+const releaseInteraction = async (bot, message) => {
+  const reply = message.original_message;
+  if (message.callback_id === releaseListChooseProject) {
+    const selection = message.actions[0].value;
+    for (let a = 0; a < reply.attachments.length; a++) {
+      reply.attachments[a].actions = null;
+    }
+    let person = '<@' + message.user + '>';
+    if (message.channel[0] == 'D') {
+      person = 'You';
+    }
+    const text = person + ' chose ' + selection;
+    reply.attachments.push({ text });
+
+    bot.replyInteractive(message, reply, async () => {
+      if (selection === 'frontend') {
+        const releases = await releaseList('ilios', 'frontend');
+        bot.replyInThread(reply, releases.join(', '));
+      }
+      if (selection === 'common') {
+        const releases = await releaseList('ilios', 'common');
+        bot.replyInThread(reply, releases.join(', '));
+      }
+      if (selection === 'lti-server') {
+        const releases = await releaseList('ilios', 'lti-server');
+        bot.replyInThread(reply, releases.join(', '));
+      }
+      if (selection === 'lti-dashboard') {
+        const releases = await releaseList('ilios', 'lti-dashboard');
+        bot.replyInThread(reply, releases.join(', '));
+      }
+    });
+  }
 };
 
 module.exports = bot => {
-  bot.hears('frontend releases', 'direct_message,direct_mention,mention', listFrontendReleases);
-  bot.hears('common releases', 'direct_message,direct_mention,mention', listCommonReleases);
-  bot.hears('lti server releases', 'direct_message,direct_mention,mention', listLtiServerReleases);
+  bot.hears('list releases', 'direct_message,direct_mention,mention', listReleases);
+  bot.on('interactive_message_callback', releaseInteraction);
 };
