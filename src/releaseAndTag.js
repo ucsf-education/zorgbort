@@ -21,6 +21,8 @@ if (!process.env.VALID_RELEASE_USERS) {
 }
 
 const VALID_RELEASE_USERS = process.env.VALID_RELEASE_USERS;
+const releaseProject = 'release-project';
+const releaseType = 'release-type';
 
 const uniqueid = require('uniqueid');
 const getUniqueId = uniqueid(process.pid);
@@ -150,110 +152,166 @@ const releaseAndTag = async (owner, repo, releaseType, namer) => {
   };
 };
 
-const validateRequestAndStartConversation = async (bot, message, owner, repo, namer) => {
+const validateRequestAndRelease = async (bot, message, owner, repo, releaseType, namer) => {
   const user = message.user;
 
   const validUsers = VALID_RELEASE_USERS.split(',');
   if (validUsers.includes(user)) {
-    releaseConversation(bot, message, owner, repo, namer);
+    try {
+      return await releaseAndTag(owner, repo, releaseType, namer);
+    } catch (e) {
+      bot.reply(message, `Error: ${e.message} (stack trace in logs)`);
+      console.error(e);
+    }
   } else {
-    const bestname = await new Promise(resolve => {
-      bot.api.users.info({user}, (err, resp) => {
-        if (err) {
-          bot.reply(message, `Error: ${err.message} (stack trace in logs)`);
-          console.error(err);
-        }
-        if (!resp.ok) {
-          resolve('Dave');
-        } else if (resp.user.profile.first_name) {
-          resolve(resp.user.profile.first_name);
+    bot.api.users.info({user}, (err, resp) => {
+      if (err) {
+        bot.reply(message, `Error: ${err.message} (stack trace in logs)`);
+        console.error(err);
+      }
+      let bestName = 'Dave';
+      if (resp.ok) {
+        if (resp.user.profile.first_name) {
+          bestName = resp.user.profile.first_name;
         } else {
-          resolve(resp.user.name);
+          bestName = resp.user.name;
         }
-      });
+      }
+      bot.reply(message, `:no_entry: I'm Sorry, ${bestName}, I'm afraid Zorgbort can't do that.`);
     });
-    bot.reply(message, `:no_entry: I'm Sorry, ${bestname}, I'm afraid Zorgbort can't do that.`);
+
   }
 };
 
-const releaseConversation = (bot, message, owner, repo, namer) => {
-  bot.startConversation(message, function(err, convo) {
-    convo.ask(`Is this a "major", "feature" or "bugfix" release for ${owner}:${repo}?`, [
+const createActionReply = (text, callback_id, actions) => {
+  return {
+    text: "Let's release some code!",
+    attachments: [
       {
-        pattern: '(major|feature|bugfix)',
-        callback: (response, convo) => {
-          convo.say(`Ok, starting ${response.text} release for ${owner}:${repo}`);
-          convo.next();
-        }
+        text,
+        callback_id,
+        attachment_type: 'default',
+        color: '#84c444',
+        actions
+      }
+    ]
+  };
+};
+
+const getPersonFromMessage = (message) => {
+  let person = '<@' + message.user + '>';
+  if (message.channel[0] == 'D') {
+    person = 'You';
+  }
+
+  return person;
+};
+
+const startRelease = async (bot, message) => {
+  bot.reply(message, createActionReply('Which Project?', releaseProject, [
+    {
+      'name': 'frontend',
+      'text': 'Ilios Frontend',
+      'value': 'frontend',
+      'type': 'button',
+    },
+    {
+      'name': 'common',
+      'text': 'Ilios Common Addon',
+      'value': 'common',
+      'type': 'button',
+    },
+    {
+      'name': 'lti-server',
+      'text': 'Ilios LTI Server',
+      'value': 'lti-server',
+      'type': 'button',
+    },
+    {
+      'name': 'lti-dashboard',
+      'text': 'Ilios LTI Dashboard',
+      'value': 'lti-dashboard',
+      'type': 'button',
+    },
+  ]));
+};
+
+const chooseReleaseType = async (bot, message) => {
+  if (message.callback_id === releaseProject) {
+    const selection = message.actions[0].value;
+    const person = getPersonFromMessage(message);
+    const reply = createActionReply('What kind of change is this?', releaseType, [
+      {
+        name: 'major',
+        text: 'Breaking / API Bump',
+        value: selection + '$$major',
+        type: 'button',
+        style: 'danger',
       },
       {
-        pattern: '(stop|cancel|no|holdon|end|quit|die)',
-        callback: (response, convo) => {
-          convo.stop();
-        }
+        name: 'minor',
+        text: 'Feature',
+        value: selection + '$$minor',
+        type: 'button',
       },
       {
-        default: true,
-        callback: function(response, convo) {
-          convo.say("Sorry that's not what I asked...");
-          convo.say("You can say 'feature', 'bugfix' or 'cancel'");
-          convo.repeat();
-          convo.next();
-        }
-      }
-    ], {'key': 'releaseType'});
+        name: 'patch',
+        text: 'Bugfix',
+        value: selection + '$$patch',
+        type: 'button',
+        style: 'primary',
+      },
+    ]);
+    const text = person + ' chose to release ' + selection;
+    reply.attachments.unshift({ text, color: '#84c444' });
+    bot.replyInteractive(message, reply);
+  }
+};
 
-    convo.on('end', async convo => {
-      if (convo.status == 'completed') {
-        try {
-          const releaseType = convo.extractResponse('releaseType');
-          let npmType = 'major';
-          if (releaseType === 'feature') {
-            npmType = 'minor';
-          }
-          if (releaseType === 'bugfix') {
-            npmType = 'patch';
-          }
-          const result = await releaseAndTag(owner, repo, npmType, namer);
-
-          bot.reply(message, `:rocket: ${owner}:${repo} ${result.version} ${result.releaseName} has been released. :tada:`);
-          bot.reply(message, `Please review and published the release notes at ${result.version} at ${result.releaseUrl}`);
-        } catch (e) {
-          bot.reply(message, `Error: ${e.message} (stack trace in logs)`);
-          console.error(e);
-        }
-
-
-      } else {
-        bot.reply(message, 'OK, nevermind!');
-      }
+const doRelease = async (bot, message) => {
+  if (message.callback_id === releaseType) {
+    const [selection, npmType] = message.actions[0].value.split('$$');
+    const person = getPersonFromMessage(message);
+    const text = `${person} chose to release a ${npmType} version of ${selection}`;
+    const reply = createActionReply(text, false, []);
+    reply.attachments.push({
+      text: ":robot_face: Ok, I'm buildng your release now...",
+      color: '#ffc339',
     });
-  });
+    bot.replyInteractive(message, reply);
+    const owner = 'ilios';
+    let namer = version => `${version}`;
+    switch (selection) {
+    case 'frontend':
+      namer = cheeseName;
+      break;
+    case 'common':
+      namer = version => `Ilios Common ${version}`;
+      break;
+    case 'lti-server':
+      namer = version => `LTI Server ${version}`;
+      break;
+    case 'lti-dashboard':
+      namer = version => `LTI Dashboard ${version}`;
+      break;
+    }
+    const result = await validateRequestAndRelease(bot, message, owner, selection, npmType, namer);
+
+    const finishedReply = createActionReply(text, false, []);
+    finishedReply.attachments.push({
+      text: `:rocket: ${owner}:${selection} ${result.releaseName} has been released. :tada:`,
+      color: '#84c444',
+    });
+    finishedReply.attachments.push({
+      text: `Release notes at ${result.releaseUrl}`,
+      color: '#84c444',
+    });
+    bot.replyInteractive(message, finishedReply);
+  }
 };
 
 module.exports = bot => {
-  const mention = ['direct_message', 'direct_mention', 'mention'];
-  bot.hears(['release the frontend', 'frontend release'], mention, (bot, message) => {
-    const owner = 'ilios';
-    const repo = 'frontend';
-    validateRequestAndStartConversation(bot, message, owner, repo, cheeseName);
-  });
-  bot.hears(['release common addon', 'common addon release'], mention, (bot, message) => {
-    const owner = 'ilios';
-    const repo = 'common';
-    const namer = version => `Ilios Common ${version}`;
-    validateRequestAndStartConversation(bot, message, owner, repo, namer);
-  });
-  bot.hears(['release lti dashboard', 'lti dashboard release'], mention, (bot, message) => {
-    const owner = 'ilios';
-    const repo = 'lti-app';
-    const namer = version => `Dashboard ${version}`;
-    validateRequestAndStartConversation(bot, message, owner, repo, namer);
-  });
-  bot.hears(['release lti server', 'lti server release', 'release lti-server', 'lti-server release'], mention, (bot, message) => {
-    const owner = 'ilios';
-    const repo = 'lti-server';
-    const namer = version => `${version}`;
-    validateRequestAndStartConversation(bot, message, owner, repo, namer);
-  });
+  bot.hears(['start release', 'release'], ['direct_message', 'direct_mention', 'mention'], startRelease);
+  bot.on('interactive_message_callback', chooseReleaseType);
+  bot.on('interactive_message_callback', doRelease);
 };
