@@ -88,11 +88,24 @@ const defaultExcuse = (bot, message) => {
   bot.reply(message, `Sorry, I don't know how to _${msg}_. It must be *${reason}!*`);
 };
 
+const listUsers = (bot, message) => {
+  bot.api.users.list({}, (err, resp) => {
+    if (err || !resp.ok) {
+      bot.reply(message, `Error: ${err.message} (stack trace in logs)`);
+      console.error(err);
+    }
+    const users = resp.members.map(obj => `${obj.id}: ${obj.real_name}`);
+    /* eslint-disable-next-line quotes */
+    bot.reply(message, 'Users: ' + users.join("\n"));
+  });
+};
+
 const mention = ['direct_message', 'direct_mention', 'mention'];
 module.exports = bot => {
   bot.hears(['hello', 'hi', 'howdy', 'sup', 'howzit'], mention, hi);
   bot.hears(['hello', 'hi', 'howdy', 'sup', 'howzit', 'good morning'], 'message_received', indirectHi);
   bot.hears(['shutdown', 'powerdown'], mention, shutdown);
   bot.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'], mention, uptime);
+  bot.hears(['list users'], mention, listUsers);
   bot.hears('', mention, defaultExcuse);
 };
