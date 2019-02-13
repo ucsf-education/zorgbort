@@ -141,7 +141,7 @@ const releaseAndTag = async (owner, repo, releaseType, namer) => {
     tag_name: version,
     name: releaseName,
     body: releaseNotes,
-    draft: true,
+    draft: false,
     prerelease: false,
   });
 
