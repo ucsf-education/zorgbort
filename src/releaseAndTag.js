@@ -215,12 +215,13 @@ const startRelease = async (bot, message) => {
       'value': 'frontend',
       'type': 'button',
     },
-    {
-      'name': 'common',
-      'text': 'Ilios Common Addon',
-      'value': 'common',
-      'type': 'button',
-    },
+    // Disabled for now, we need to be able to NPM publish this
+    // {
+    //   'name': 'common',
+    //   'text': 'Ilios Common Addon',
+    //   'value': 'common',
+    //   'type': 'button',
+    // },
     {
       'name': 'lti-server',
       'text': 'Ilios LTI Server',
