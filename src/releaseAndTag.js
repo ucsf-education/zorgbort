@@ -233,6 +233,12 @@ const startRelease = async (bot, message) => {
       'value': 'lti-dashboard',
       'type': 'button',
     },
+    {
+      'name': 'simple-charts',
+      'text': 'Ember Simple Charts',
+      'value': 'simple-charts',
+      'type': 'button',
+    },
   ]));
 };
 
