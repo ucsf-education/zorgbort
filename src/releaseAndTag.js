@@ -294,7 +294,7 @@ const confirmRelease = async (bot, message) => {
       {
         name: 'yes',
         text: 'Yes. Make it So!',
-        value: selection + '$$major',
+        value: selection + '$$' + npmType,
         type: 'button',
         style: 'primary',
       },
