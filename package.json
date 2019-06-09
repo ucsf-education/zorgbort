@@ -20,7 +20,7 @@
   "dependencies": {
     "@octokit/rest": "^16.15.0",
     "app-root-path": "^2.0.1",
-    "botkit": "^0.7.2",
+    "botkit": "^0.7.4",
     "botkit-storage-mongo": "^1.0.7",
     "cheese-name": "^1.0.0",
     "dotenv": "^6.2.0",
