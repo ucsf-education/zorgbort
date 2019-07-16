@@ -233,7 +233,7 @@ const startRelease = async (bot, message) => {
         },
         {
           text: 'Ember Simple Charts',
-          value: 'simple-charts',
+          value: 'ember-simple-charts',
         },
       ]
     },
