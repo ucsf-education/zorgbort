@@ -30,7 +30,7 @@ const getUniqueId = uniqueid(process.pid);
 const fs = require('mz/fs');
 const Git = require('nodegit');
 const Github = require('../lib/github');
-const cheeseName = require('cheese-name');
+const randomDogBreed = require('dog-breed-names').random;
 const rmdir = require('rimraf');
 const mkdirp = require('mkdirp');
 const moment = require('moment');
@@ -329,7 +329,7 @@ const doRelease = async (bot, message) => {
       let namer = version => `${version}`;
       switch (selection) {
       case 'frontend':
-        namer = cheeseName;
+        namer = randomDogBreed;
         break;
       case 'common':
         namer = version => `Ilios Common ${version}`;

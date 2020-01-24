@@ -23,6 +23,7 @@
     "botkit": "^0.7.4",
     "botkit-storage-mongo": "^1.0.7",
     "cheese-name": "^1.0.0",
+    "dog-breed-names": "^2.0.2",
     "dotenv": "^6.2.0",
     "generate-github-release-notes": "^1.2.1",
     "huh": "^2.0.1",
