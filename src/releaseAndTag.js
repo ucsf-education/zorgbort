@@ -161,15 +161,12 @@ const validateRequestAndRelease = async (bot, message, owner, repo, releaseType,
     try {
       return await releaseAndTag(owner, repo, releaseType, namer);
     } catch (e) {
-      bot.reply(message, `Error: ${e.message} (stack trace in logs)`);
+      await bot.reply(message, `Error: ${e.message} (stack trace in logs)`);
       console.error(e);
     }
   } else {
-    bot.api.users.info({user}, (err, resp) => {
-      if (err) {
-        bot.reply(message, `Error: ${err.message} (stack trace in logs)`);
-        console.error(err);
-      }
+    try {
+      const resp = await bot.api.users.info({ user });
       let bestName = 'Dave';
       if (resp.ok) {
         if (resp.user.profile.first_name) {
@@ -178,9 +175,11 @@ const validateRequestAndRelease = async (bot, message, owner, repo, releaseType,
           bestName = resp.user.name;
         }
       }
-      bot.reply(message, `:no_entry: I'm Sorry, ${bestName}, I'm afraid Zorgbort can't do that.`);
-    });
-
+      await bot.reply(message, `:no_entry: I'm Sorry, ${bestName}, I'm afraid Zorgbort can't do that.`);
+    } catch (e) {
+      await bot.reply(message, `Error: ${e.message} (stack trace in logs)`);
+      console.error(e);
+    }
   }
 };
 
@@ -209,7 +208,7 @@ const getPersonFromMessage = (message) => {
 };
 
 const startRelease = async (bot, message) => {
-  bot.reply(message, createActionReply(':cool: I just need to know:', releaseProject, [
+  await bot.reply(message, createActionReply(':cool: I just need to know:', releaseProject, [
     {
       name: 'project',
       text: 'Which Project?',
@@ -251,7 +250,7 @@ const chooseReleaseType = async (bot, message) => {
   if (message.callback_id === releaseProject) {
     if (message.actions[0].value === 'cancel') {
       const cancelRelease = createActionReply('Done! Your release has been canceled', false, []);
-      bot.replyInteractive(message, cancelRelease);
+      await bot.replyInteractive(message, cancelRelease);
     } else {
       const selection = message.actions[0].selected_options[0].value;
       const person = getPersonFromMessage(message);
@@ -279,7 +278,7 @@ const chooseReleaseType = async (bot, message) => {
       ]);
       const text = person + ' chose to release ' + selection;
       reply.attachments.unshift({ text, color: '#84c444' });
-      bot.replyInteractive(message, reply);
+      await bot.replyInteractive(message, reply);
     }
   }
 };
@@ -306,7 +305,7 @@ const confirmRelease = async (bot, message) => {
         style: 'danger',
       },
     ]);
-    bot.replyInteractive(message, reply);
+    await bot.replyInteractive(message, reply);
   }
 };
 
@@ -314,7 +313,7 @@ const doRelease = async (bot, message) => {
   if (message.callback_id === releaseFinal) {
     if (message.actions[0].value === 'cancel') {
       const cancelRelease = createActionReply('OK Consider it Canceled!', false, []);
-      bot.replyInteractive(message, cancelRelease);
+      await bot.replyInteractive(message, cancelRelease);
     } else {
       const [selection, npmType] = message.actions[0].value.split('$$');
       const person = getPersonFromMessage(message);
@@ -324,7 +323,7 @@ const doRelease = async (bot, message) => {
         text: ":robot_face: Ok, I'm building your release now...",
         color: '#ffc339',
       });
-      bot.replyInteractive(message, reply);
+      await bot.replyInteractive(message, reply);
       const owner = 'ilios';
       let namer = version => `${version}`;
       switch (selection) {
@@ -352,14 +351,14 @@ const doRelease = async (bot, message) => {
         text: `Release notes at ${result.releaseUrl}`,
         color: '#84c444',
       });
-      bot.replyInteractive(message, finishedReply);
+      await bot.replyInteractive(message, finishedReply);
     }
   }
 };
 
 module.exports = bot => {
   bot.hears(['start release', 'release'], ['direct_message', 'direct_mention', 'mention'], startRelease);
-  bot.on('interactive_message_callback', chooseReleaseType);
-  bot.on('interactive_message_callback', confirmRelease);
-  bot.on('interactive_message_callback', doRelease);
+  bot.on('interactive_message', chooseReleaseType);
+  bot.on('interactive_message', confirmRelease);
+  bot.on('interactive_message', doRelease);
 };

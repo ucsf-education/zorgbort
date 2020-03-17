@@ -5,7 +5,7 @@ const { releaseList } = require('../lib/releaseList');
 const releaseListChooseProject = 'release-list-project';
 
 const listReleases = async (bot, message) => {
-  bot.reply(message, {
+  await bot.reply(message, {
     text: 'Ok, I will look up a release list for you',
     attachments: [
       {
@@ -57,28 +57,27 @@ const releaseInteraction = async (bot, message) => {
     const text = person + ' chose ' + selection;
     reply.attachments.push({ text });
 
-    bot.replyInteractive(message, reply, async () => {
-      if (selection === 'frontend') {
-        const releases = await releaseList('ilios', 'frontend');
-        bot.replyInThread(reply, releases.join(', '));
-      }
-      if (selection === 'common') {
-        const releases = await releaseList('ilios', 'common');
-        bot.replyInThread(reply, releases.join(', '));
-      }
-      if (selection === 'lti-server') {
-        const releases = await releaseList('ilios', 'lti-server');
-        bot.replyInThread(reply, releases.join(', '));
-      }
-      if (selection === 'lti-dashboard') {
-        const releases = await releaseList('ilios', 'lti-dashboard');
-        bot.replyInThread(reply, releases.join(', '));
-      }
-    });
+    await bot.replyInteractive(message, reply);
+    if (selection === 'frontend') {
+      const releases = await releaseList('ilios', 'frontend');
+      await bot.replyInThread(reply, releases.join(', '));
+    }
+    if (selection === 'common') {
+      const releases = await releaseList('ilios', 'common');
+      await bot.replyInThread(reply, releases.join(', '));
+    }
+    if (selection === 'lti-server') {
+      const releases = await releaseList('ilios', 'lti-server');
+      await bot.replyInThread(reply, releases.join(', '));
+    }
+    if (selection === 'lti-dashboard') {
+      const releases = await releaseList('ilios', 'lti-dashboard');
+      await bot.replyInThread(reply, releases.join(', '));
+    }
   }
 };
 
 module.exports = bot => {
-  bot.hears('list releases', 'direct_message,direct_mention,mention', listReleases);
-  bot.on('interactive_message_callback', releaseInteraction);
+  bot.hears('list releases', ['direct_message', 'direct_mention', 'mention'], listReleases);
+  bot.on('message', releaseInteraction);
 };

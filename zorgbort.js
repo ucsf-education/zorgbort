@@ -3,8 +3,10 @@ require('dotenv').config();
 
 const bot = require('./lib/bot.js');
 
-require('./src/releases.js')(bot);
-require('./src/releaseAndTag.js')(bot);
-require('./src/cheese.js')(bot);
-require('./src/dogs.js')(bot);
-require('./src/conversation.js')(bot);
+bot.ready(() => {
+  bot.loadModule(__dirname + '/src/releases');
+  bot.loadModule(__dirname + '/src/releaseAndTag');
+  bot.loadModule(__dirname + '/src/cheese');
+  bot.loadModule(__dirname + '/src/dogs');
+  bot.loadModule(__dirname + '/src/conversation');
+});
