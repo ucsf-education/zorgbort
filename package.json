@@ -27,7 +27,6 @@
     "dotenv": "^6.2.0",
     "generate-github-release-notes": "^1.2.1",
     "huh": "^2.0.1",
-    "mkdirp": "^0.5.1",
     "moment": "^2.19.3",
     "mz": "^2.6.0",
     "nodegit": "^0.24.3",
@@ -35,7 +34,7 @@
     "uniqueid": "^1.0.0"
   },
   "engines": {
-    "node": "10"
+    "node": ">=10.12.0"
   },
   "devDependencies": {
     "eslint": "^5.13.0",
