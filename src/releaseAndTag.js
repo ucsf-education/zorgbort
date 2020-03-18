@@ -106,7 +106,7 @@ const createTempDirectory = async (name) => {
   if (exists) {
     throw new Error(`Tried to create directory, but it already exists: ${dir}`);
   }
-  fs.mkdirSync(dir, { recursive: true });
+  await fs.mkdir(dir, { recursive: true });
   console.log(`${dir} created`);
 
   return dir;
