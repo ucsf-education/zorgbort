@@ -2,13 +2,13 @@
   "name": "zorgbort",
   "version": "1.0.0",
   "description": "Zorgbort does Iliosy things well",
-  "main": "zorgbort.js",
+  "main": "bot.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ucsf-ckm/zorgbort.git"
   },
   "scripts": {
-    "start": "node zorgbort.js",
+    "start": "node bot.js",
     "test": "mocha && eslint . "
   },
   "author": "Ilios Team (info@iliosproject.org)",
