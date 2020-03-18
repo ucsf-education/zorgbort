@@ -32,7 +32,6 @@ const Git = require('nodegit');
 const Github = require('../lib/github');
 const randomDogBreed = require('dog-breed-names').random;
 const rmdir = require('rimraf');
-const mkdirp = require('mkdirp');
 const moment = require('moment');
 const uniqueReleaseName = require('../lib/uniqueReleaseName');
 const { generateReleaseNotes } = require('generate-github-release-notes');
@@ -107,7 +106,7 @@ const createTempDirectory = async (name) => {
   if (exists) {
     throw new Error(`Tried to create directory, but it already exists: ${dir}`);
   }
-  mkdirp(dir);
+  await fs.mkdir(dir, { recursive: true });
   console.log(`${dir} created`);
 
   return dir;
