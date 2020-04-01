@@ -2,7 +2,9 @@
 const randomDogBreed = require('dog-breed-names').random;
 
 module.exports = controller => {
-  controller.hears(['dog?'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
-    bot.reply(message, randomDogBreed());
+  console.log(randomDogBreed());
+
+  controller.hears(['dog?'], ['direct_message', 'direct_mention', 'mention'], async (bot, message) => {
+    await bot.reply(message, randomDogBreed());
   });
 };
