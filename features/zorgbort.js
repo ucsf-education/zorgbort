@@ -1,9 +1,12 @@
 'use strict';
 const cheeseName = require('cheese-name');
 const randomDogBreed = require('dog-breed-names').random;
-
+const { releaseList } = require('../lib/releaseList');
 const excuse = require('huh');
 const os = require('os');
+// const { SlackDialog } = require('botbuilder-adapter-slack');
+
+const releaseListChooseProject = 'release-list-project';
 
 const randomCheese = async (bot, message) => {
   await bot.reply(message, cheeseName());
@@ -73,13 +76,90 @@ const listUsers = async (bot, message) => {
   }
 };
 
+const listReleases = async (bot, message) => {
+  await bot.reply(message, 'Ok, I will look up a release list for you.');
+  await bot.reply(message, {
+    blocks: [
+      {
+        'type': 'section',
+        'text': {
+          'type': 'plain_text',
+          'text': 'Which project?',
+        },
+      },
+      {
+        'type': 'actions',
+        'block_id': releaseListChooseProject,
+        'elements': [
+          {
+            'type': 'button',
+            'text': {
+              'type': 'plain_text',
+              'text': 'Ilios Frontend'
+            },
+            'value' : 'frontend',
+          },
+          {
+            'type': 'button',
+            'text': {
+              'type': 'plain_text',
+              'text': 'Ilios Common Addon'
+            },
+            'value' : 'common',
+          },
+          {
+            'type': 'button',
+            'text': {
+              'type': 'plain_text',
+              'text': 'Ilios LTI Server'
+            },
+            'value' : 'lti-server',
+          },
+          {
+            'type': 'button',
+            'text': {
+              'type': 'plain_text',
+              'text': 'Ilios LTI Dashboard'
+            },
+            'value' : 'lti-dashboard',
+          }
+        ],
+      },
+    ],
+  });
+};
+
+const releaseInteraction = async (bot, message) => {
+  const blockAction = message.incoming_message.channelData.actions[0];
+  if (blockAction.block_id === releaseListChooseProject) {
+    const selection = blockAction.value;
+
+    let person = '<@' + message.user + '>';
+    if (message.channel[0] === 'D') { // D indicates direct message.
+      person = 'You';
+    }
+    const text = person + ' chose ' + selection;
+    await bot.replyInteractive(message, text);
+    if (['frontend', 'common', 'lti-server', 'lti-dashboard'].includes(selection)) {
+      const releases = await releaseList('ilios', selection);
+      // this method doesn't seem to work properly atm, no new thread get's spawned.
+      // instead, a non-threaded response is emitted.
+      // not a show stopper, but something to be aware of.
+      // @todo investigate [ST 2020/04/01]
+      await bot.replyInThread(message, releases.join(', '));
+    }
+  }
+};
+
 const mention = ['direct_message', 'direct_mention', 'mention'];
 
 module.exports = controller => {
+  controller.on('block_actions', releaseInteraction);
   controller.hears(['hello', 'hi', 'howdy', 'sup', 'howzit'], mention, hi);
   controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'], mention, uptime);
   controller.hears(['list users'], mention, listUsers);
   controller.hears(['cheese?'], mention, randomCheese);
-  controller.hears(['cheese?'], mention, randomDogbreed);
+  controller.hears(['dog?'], mention, randomDogbreed);
+  controller.hears('list releases', mention, listReleases);
   controller.hears('', mention, defaultExcuse);
 };
