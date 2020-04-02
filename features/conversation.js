@@ -1,7 +1,17 @@
 'use strict';
+const cheeseName = require('cheese-name');
+const randomDogBreed = require('dog-breed-names').random;
 
 const excuse = require('huh');
 const os = require('os');
+
+const randomCheese = async (bot, message) => {
+  await bot.reply(message, cheeseName());
+};
+
+const randomDogbreed = async (bot, message) => {
+  await bot.reply(message, randomDogBreed());
+};
 
 const hi = async (bot, message) => {
   try {
@@ -69,5 +79,7 @@ module.exports = controller => {
   controller.hears(['hello', 'hi', 'howdy', 'sup', 'howzit'], mention, hi);
   controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'], mention, uptime);
   controller.hears(['list users'], mention, listUsers);
+  controller.hears(['cheese?'], mention, randomCheese);
+  controller.hears(['cheese?'], mention, randomDogbreed);
   controller.hears('', mention, defaultExcuse);
 };
