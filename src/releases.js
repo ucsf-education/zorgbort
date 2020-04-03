@@ -1,84 +1,80 @@
 'use strict';
-
 const { releaseList } = require('../lib/releaseList');
-
 const releaseListChooseProject = 'release-list-project';
 
 const listReleases = async (bot, message) => {
-  bot.reply(message, {
-    text: 'Ok, I will look up a release list for you',
-    attachments: [
+  await bot.reply(message, 'Ok, I will look up a release list for you.');
+  await bot.reply(message, {
+    blocks: [
       {
-        title: 'Which project?',
-        callback_id: releaseListChooseProject,
-        attachment_type: 'default',
-        actions: [
+        'type': 'section',
+        'text': {
+          'type': 'plain_text',
+          'text': 'Which project?',
+        },
+      },
+      {
+        'type': 'actions',
+        'block_id': releaseListChooseProject,
+        'elements': [
           {
-            'name': 'frontend',
-            'text': 'Ilios Frontend',
-            'value': 'frontend',
             'type': 'button',
+            'text': {
+              'type': 'plain_text',
+              'text': 'Ilios Frontend'
+            },
+            'value' : 'frontend',
           },
           {
-            'name': 'common',
-            'text': 'Ilios Common Addon',
-            'value': 'common',
             'type': 'button',
+            'text': {
+              'type': 'plain_text',
+              'text': 'Ilios Common Addon'
+            },
+            'value' : 'common',
           },
           {
-            'name': 'lti-server',
-            'text': 'Ilios LTI Server',
-            'value': 'lti-server',
             'type': 'button',
+            'text': {
+              'type': 'plain_text',
+              'text': 'Ilios LTI Server'
+            },
+            'value' : 'lti-server',
           },
           {
-            'name': 'lti-dashboard',
-            'text': 'Ilios LTI Dashboard',
-            'value': 'lti-dashboard',
             'type': 'button',
-          },
-        ]
-      }
-    ]
+            'text': {
+              'type': 'plain_text',
+              'text': 'Ilios LTI Dashboard'
+            },
+            'value' : 'lti-dashboard',
+          }
+        ],
+      },
+    ],
   });
 };
 
 const releaseInteraction = async (bot, message) => {
-  const reply = message.original_message;
-  if (message.callback_id === releaseListChooseProject) {
-    const selection = message.actions[0].value;
-    for (let a = 0; a < reply.attachments.length; a++) {
-      reply.attachments[a].actions = null;
-    }
+  const blockAction = message.incoming_message.channelData.actions[0];
+  if (blockAction.block_id === releaseListChooseProject) {
+    const selection = blockAction.value;
+
     let person = '<@' + message.user + '>';
-    if (message.channel[0] == 'D') {
+    if (message.channel[0] === 'D') { // D indicates direct message.
       person = 'You';
     }
     const text = person + ' chose ' + selection;
-    reply.attachments.push({ text });
-
-    bot.replyInteractive(message, reply, async () => {
-      if (selection === 'frontend') {
-        const releases = await releaseList('ilios', 'frontend');
-        bot.replyInThread(reply, releases.join(', '));
-      }
-      if (selection === 'common') {
-        const releases = await releaseList('ilios', 'common');
-        bot.replyInThread(reply, releases.join(', '));
-      }
-      if (selection === 'lti-server') {
-        const releases = await releaseList('ilios', 'lti-server');
-        bot.replyInThread(reply, releases.join(', '));
-      }
-      if (selection === 'lti-dashboard') {
-        const releases = await releaseList('ilios', 'lti-dashboard');
-        bot.replyInThread(reply, releases.join(', '));
-      }
-    });
+    await bot.replyInteractive(message, text);
+    if (['frontend', 'common', 'lti-server', 'lti-dashboard'].includes(selection)) {
+      const releases = await releaseList('ilios', selection);
+      // this method doesn't seem to work properly atm, no new thread get's spawned.
+      // instead, a non-threaded response is emitted.
+      // not a show stopper, but something to be aware of.
+      // @todo investigate [ST 2020/04/01]
+      await bot.replyInThread(message, releases.join(', '));
+    }
   }
 };
 
-module.exports = bot => {
-  bot.hears('list releases', 'direct_message,direct_mention,mention', listReleases);
-  bot.on('interactive_message_callback', releaseInteraction);
-};
+module.exports = { listReleases, releaseInteraction };

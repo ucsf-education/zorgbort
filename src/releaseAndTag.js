@@ -1,5 +1,4 @@
 'use strict';
-
 if (!process.env.SSH_PRIVATE_KEY) {
   throw new Error('Error: Specify SSH_PRIVATE_KEY in environment');
 }
@@ -20,11 +19,6 @@ if (!process.env.VALID_RELEASE_USERS) {
   throw new Error('Error: Specify comma separated list of VALID_RELEASE_USERS in environment');
 }
 
-const VALID_RELEASE_USERS = process.env.VALID_RELEASE_USERS;
-const releaseProject = 'release-project';
-const releaseType = 'release-type';
-const releaseFinal = 'release-final';
-
 const uniqueid = require('uniqueid');
 const getUniqueId = uniqueid(process.pid);
 const fs = require('mz/fs');
@@ -37,6 +31,11 @@ const uniqueReleaseName = require('../lib/uniqueReleaseName');
 const { generateReleaseNotes } = require('generate-github-release-notes');
 const incrementPackageVersion = require('../lib/incrementPackageVersion');
 const { releaseList } = require('../lib/releaseList');
+
+const VALID_RELEASE_USERS = process.env.VALID_RELEASE_USERS;
+const releaseProject = 'release-project';
+const releaseType = 'release-type';
+const releaseFinal = 'release-final';
 
 const cloneRepository = async (owner, repo, target) => {
   const url = `git@github.com:${owner}/${repo}`;
@@ -116,7 +115,7 @@ const removeTempDirectory = async (name) => {
   const dir = `/tmp/${name}/` + getUniqueId();
   console.log(`Removing temporary directory ${dir}`);
 
-  return await rmdir(dir, err => {
+  await rmdir(dir, err => {
     console.error(err);
   });
 };
@@ -152,47 +151,27 @@ const releaseAndTag = async (owner, repo, releaseType, namer) => {
   };
 };
 
-const validateRequestAndRelease = async (bot, message, owner, repo, releaseType, namer) => {
-  const user = message.user;
-
-  const validUsers = VALID_RELEASE_USERS.split(',');
-  if (validUsers.includes(user)) {
-    try {
-      return await releaseAndTag(owner, repo, releaseType, namer);
-    } catch (e) {
-      bot.reply(message, `Error: ${e.message} (stack trace in logs)`);
-      console.error(e);
-    }
-  } else {
-    bot.api.users.info({user}, (err, resp) => {
-      if (err) {
-        bot.reply(message, `Error: ${err.message} (stack trace in logs)`);
-        console.error(err);
-      }
-      let bestName = 'Dave';
-      if (resp.ok) {
-        if (resp.user.profile.first_name) {
-          bestName = resp.user.profile.first_name;
-        } else {
-          bestName = resp.user.name;
-        }
-      }
-      bot.reply(message, `:no_entry: I'm Sorry, ${bestName}, I'm afraid Zorgbort can't do that.`);
-    });
-
-  }
-};
-
-const createActionReply = (text, callback_id, actions) => {
+const createActionReply = (text, action, elements) => {
   return {
-    text: "Let's release some code!",
-    attachments: [
+    'blocks': [
       {
-        text,
-        callback_id,
-        attachment_type: 'default',
-        color: '#84c444',
-        actions
+        'type': 'section',
+        'text': {
+          'type': 'plain_text',
+          'text': "Let's release some code"
+        }
+      },
+      {
+        'type': 'section',
+        'text': {
+          'type': 'plain_text',
+          'text': text,
+        },
+      },
+      {
+        'type': 'actions',
+        'block_id': action,
+        'elements': elements
       }
     ]
   };
@@ -200,165 +179,263 @@ const createActionReply = (text, callback_id, actions) => {
 
 const getPersonFromMessage = (message) => {
   let person = '<@' + message.user + '>';
-  if (message.channel[0] == 'D') {
+  if (message.channel[0] === 'D') {
     person = 'You';
   }
-
   return person;
 };
 
 const startRelease = async (bot, message) => {
-  bot.reply(message, createActionReply(':cool: I just need to know:', releaseProject, [
+  await bot.reply(message, createActionReply(':cool: I just need to know:', releaseProject, [
     {
-      name: 'project',
-      text: 'Which Project?',
-      type: 'select',
-      options: [
+      'type': 'static_select',
+      'placeholder': {
+        'type': 'plain_text',
+        'text': 'Which Project?'
+      },
+      'action_id': 'select_project',
+      'options': [
         {
-          text: 'Ilios Frontend',
-          value: 'frontend',
+          'text': {
+            'type': 'plain_text',
+            'text': 'Ilios Frontend',
+          },
+          'value': 'frontend',
         },
         {
-          text: 'Ilios Common Addon',
-          value: 'common',
+          'text': {
+            'type': 'plain_text',
+            'text': 'Ilios Common Addon'
+          },
+          'value': 'common',
         },
         {
-          text: 'Ilios LTI Server',
-          value: 'lti-server',
+          'text': {
+            'type': 'plain_text',
+            'text': 'Ilios LTI Server',
+          },
+          'value': 'lti-server',
         },
         {
-          text: 'Ilios LTI Dashboard',
-          value: 'lti-dashboard',
+          'text': {
+            'type': 'plain_text',
+            'text': 'Ilios LTI Dashboard',
+          },
+          'value': 'lti-dashboard',
         },
         {
-          text: 'Ember Simple Charts',
-          value: 'ember-simple-charts',
+          'text': {
+            'type': 'plain_text',
+            'text': 'Ember Simple Charts',
+          },
+          'value': 'ember-simple-charts',
         },
       ]
     },
     {
-      name: 'cancel',
-      text: 'Cancel',
-      value: 'cancel',
-      type: 'button',
-      style: 'danger',
-    },
+      'type': 'button',
+      'text': {
+        'type': 'plain_text',
+        'text': 'Cancel'
+      },
+      'value': 'cancel',
+      'action_id': 'cancel'
+    }
   ]));
 };
 
-const chooseReleaseType = async (bot, message) => {
-  if (message.callback_id === releaseProject) {
-    if (message.actions[0].value === 'cancel') {
-      const cancelRelease = createActionReply('Done! Your release has been canceled', false, []);
-      bot.replyInteractive(message, cancelRelease);
-    } else {
-      const selection = message.actions[0].selected_options[0].value;
-      const person = getPersonFromMessage(message);
-      const reply = createActionReply('What kind of change is this?', releaseType, [
-        {
-          name: 'major',
-          text: 'Breaking / API Bump',
-          value: selection + '$$major',
-          type: 'button',
-          style: 'danger',
-        },
-        {
-          name: 'minor',
-          text: 'Feature',
-          value: selection + '$$minor',
-          type: 'button',
-        },
-        {
-          name: 'patch',
-          text: 'Bugfix',
-          value: selection + '$$patch',
-          type: 'button',
-          style: 'primary',
-        },
-      ]);
-      const text = person + ' chose to release ' + selection;
-      reply.attachments.unshift({ text, color: '#84c444' });
-      bot.replyInteractive(message, reply);
+const chooseReleaseType = async (bot, message, blockAction) => {
+  if ('cancel' === blockAction.value) {
+    await bot.replyInteractive(message, 'Done! Your release has been canceled.');
+    return;
+  }
+  const selection = blockAction.selected_option.value;
+  const person = getPersonFromMessage(message);
+  const reply = createActionReply('What kind of change is this?', releaseType, [
+    {
+      'type': 'button',
+      'text': {
+        'type': 'plain_text',
+        'text': 'Breaking / API Bump'
+      },
+      'value': selection + '$$major',
+      'action_id': 'major',
+      'style': 'danger'
+    },
+    {
+      'type': 'button',
+      'text': {
+        'type': 'plain_text',
+        'text': 'Feature'
+      },
+      'value': selection + '$$minor',
+      'action_id': 'minor'
+    },
+    {
+      'type': 'button',
+      'text': {
+        'type': 'plain_text',
+        'text': 'Bugfix'
+      },
+      'value': selection + '$$patch',
+      'action_id': 'patch',
+      'style': 'primary'
     }
-  }
+  ]);
+  const text = person + ' chose to release ' + selection;
+  reply.blocks.splice(1, 0, {
+    'type': 'section',
+    'text': {
+      'type': 'plain_text',
+      'text': text,
+    }
+  });
+  console.log(reply);
+  await bot.replyInteractive(message, reply);
 };
 
-const confirmRelease = async (bot, message) => {
-  if (message.callback_id === releaseType) {
-    const [selection, npmType] = message.actions[0].value.split('$$');
-    const text = `
-      I'm going to release a ${npmType} version of ${selection}.
-      Is that correct?`;
-    const reply = createActionReply(text, releaseFinal, [
-      {
-        name: 'yes',
-        text: 'Yes. Make it So!',
-        value: selection + '$$' + npmType,
-        type: 'button',
-        style: 'primary',
+const confirmRelease = async (bot, message, blockAction) => {
+  const [selection, npmType] = blockAction.value.split('$$');
+  const text = `
+    I'm going to release a ${npmType} version of ${selection}.
+    Is that correct?`;
+  const reply = createActionReply(text, releaseFinal, [
+    {
+      'type': 'button',
+      'text': {
+        'type': 'plain_text',
+        'text': 'Yes. Make it So!',
       },
-      {
-        name: 'no',
-        text: 'No. Belay that Order!',
-        value: 'cancel',
-        type: 'button',
-        style: 'danger',
+      'value': selection + '$$' + npmType,
+      'action_id': 'yes',
+      'style': 'primary'
+    },
+    {
+      'type': 'button',
+      'text': {
+        'type': 'plain_text',
+        'text': 'No. Belay that Order!',
       },
-    ]);
-    bot.replyInteractive(message, reply);
-  }
+      'value': 'cancel',
+      'action_id': 'cancel',
+      'style': 'danger'
+    }
+  ]);
+
+  await bot.replyInteractive(message, reply);
 };
 
-const doRelease = async (bot, message) => {
-  if (message.callback_id === releaseFinal) {
-    if (message.actions[0].value === 'cancel') {
-      const cancelRelease = createActionReply('OK Consider it Canceled!', false, []);
-      bot.replyInteractive(message, cancelRelease);
-    } else {
-      const [selection, npmType] = message.actions[0].value.split('$$');
-      const person = getPersonFromMessage(message);
-      const text = `${person} chose to release a ${npmType} version of ${selection}`;
-      const reply = createActionReply(text, false, []);
-      reply.attachments.push({
-        text: ":robot_face: Ok, I'm building your release now...",
-        color: '#ffc339',
-      });
-      bot.replyInteractive(message, reply);
-      const owner = 'ilios';
-      let namer = version => `${version}`;
-      switch (selection) {
-      case 'frontend':
-        namer = randomDogBreed;
-        break;
-      case 'common':
-        namer = version => `Ilios Common ${version}`;
-        break;
-      case 'lti-server':
-        namer = version => `LTI Server ${version}`;
-        break;
-      case 'lti-dashboard':
-        namer = version => `LTI Dashboard ${version}`;
-        break;
+const doRelease = async (bot, message, blockAction) => {
+  if ('cancel' === blockAction.value) {
+    await bot.replyInteractive(message, 'OK Consider it Canceled!');
+    return;
+  }
+  // authorization
+  // @todo add this to every step of this process [ST 2020/04/03]
+  const user = message.user;
+  const validUsers = VALID_RELEASE_USERS.split(',');
+  if (! validUsers.includes(user)) {
+    try {
+      const response = await bot.api.users.info({user: message.user});
+      let bestName = 'Dave';
+      if (response.ok) {
+        bestName = response.user.profile.first_name ? response.user.profile.first_name : response.user.name;
       }
-      const result = await validateRequestAndRelease(bot, message, owner, selection, npmType, namer);
-
-      const finishedReply = createActionReply(text, false, []);
-      finishedReply.attachments.push({
-        text: `:rocket: ${owner}:${selection} ${result.releaseName} has been released. :tada:`,
-        color: '#84c444',
-      });
-      finishedReply.attachments.push({
-        text: `Release notes at ${result.releaseUrl}`,
-        color: '#84c444',
-      });
-      bot.replyInteractive(message, finishedReply);
+      await bot.reply(message, `:no_entry: I'm sorry ${bestName}, I'm afraid Zorgbort can't do that.`);
+    } catch (err) {
+      console.error(err);
+      await bot.reply(message, `Error: ${err.message} (stack trace in logs)`);
     }
+    return;
+  }
+
+  const [repo, releaseType] = blockAction.value.split('$$');
+  const person = getPersonFromMessage(message);
+  await bot.replyInteractive(message, {
+    'blocks': [
+      {
+        'type': 'section',
+        'text': {
+          'type': 'plain_text',
+          'text': `${person} chose to release a ${releaseType} version of ${repo}.`
+        }
+      },
+      {
+        'type': 'section',
+        'text': {
+          'type': 'plain_text',
+          'text': ":robot_face: Ok, I'm building your release now..."
+        }
+      }
+    ]
+  });
+  const owner = 'ilios';
+  let namer = version => `${version}`;
+  switch (repo) {
+  case 'frontend':
+    namer = randomDogBreed;
+    break;
+  case 'common':
+    namer = version => `Ilios Common ${version}`;
+    break;
+  case 'lti-server':
+    namer = version => `LTI Server ${version}`;
+    break;
+  case 'lti-dashboard':
+    namer = version => `LTI Dashboard ${version}`;
+    break;
+  }
+
+  try {
+    const { releaseName, releaseUrl } = await releaseAndTag(owner, repo, releaseType, namer);
+
+    await bot.replyInteractive(message, {
+      'blocks': [
+        {
+          'type': 'section',
+          'text': {
+            'type': 'plain_text',
+            'text': `${person} chose to release a ${releaseType} version of ${repo}.`
+          }
+        },
+        {
+          'type': 'section',
+          'text': {
+            'type': 'plain_text',
+            'text': `:rocket: ${owner}:${repo} ${releaseName} has been released. :tada:`,
+          }
+        },
+        {
+          'type': 'section',
+          'text': {
+            'type': 'mrkdwn',
+            'text': `Release notes at ${releaseUrl}.`,
+          }
+        }
+      ]
+    });
+  } catch (err) {
+    console.error(err);
+    await bot.reply(message, `Error: ${err.message} (stack trace in logs)`);
   }
 };
 
-module.exports = bot => {
-  bot.hears(['start release', 'release'], ['direct_message', 'direct_mention', 'mention'], startRelease);
-  bot.on('interactive_message_callback', chooseReleaseType);
-  bot.on('interactive_message_callback', confirmRelease);
-  bot.on('interactive_message_callback', doRelease);
+const releaseStepsActionHandler = async (bot, message) => {
+  const blockAction = message.incoming_message.channelData.actions[0];
+  const action = blockAction.block_id;
+  switch (action) {
+  case releaseProject:
+    await chooseReleaseType(bot, message, blockAction);
+    break;
+  case releaseType:
+    await confirmRelease(bot, message, blockAction);
+    break;
+  case releaseFinal:
+    await doRelease(bot, message, blockAction);
+    break;
+  default:
+    // do nothing
+  }
 };
+
+module.exports = { releaseStepsActionHandler, startRelease };

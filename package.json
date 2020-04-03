@@ -2,13 +2,13 @@
   "name": "zorgbort",
   "version": "1.0.0",
   "description": "Zorgbort does Iliosy things well",
-  "main": "zorgbort.js",
+  "main": "bot.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ucsf-ckm/zorgbort.git"
   },
   "scripts": {
-    "start": "node zorgbort.js",
+    "start": "node bot.js",
     "test": "mocha && eslint . "
   },
   "author": "Ilios Team (info@iliosproject.org)",
@@ -19,17 +19,19 @@
   "homepage": "https://github.com/ucsf-ckm/zorgbort#readme",
   "dependencies": {
     "@octokit/rest": "^16.15.0",
-    "app-root-path": "^2.0.1",
-    "botkit": "^0.7.4",
-    "botkit-storage-mongo": "^1.0.7",
+    "app-root-path": "^3.0.0",
+    "botbuilder-adapter-slack": "^1.0.8",
+    "botbuilder-storage-mongodb": "^0.9.5",
+    "botkit": "^4.6.2",
+    "botkit-plugin-cms": "^1.0.3",
     "cheese-name": "^1.0.0",
     "dog-breed-names": "^2.0.2",
-    "dotenv": "^6.2.0",
+    "dotenv": "^7.0.0",
     "generate-github-release-notes": "^1.2.1",
     "huh": "^2.0.1",
     "moment": "^2.19.3",
     "mz": "^2.6.0",
-    "nodegit": "^0.24.3",
+    "nodegit": "^0.26.5",
     "rimraf": "^2.6.1",
     "uniqueid": "^1.0.0"
   },
@@ -37,7 +39,7 @@
     "node": ">=10.12.0"
   },
   "devDependencies": {
-    "eslint": "^5.13.0",
+    "eslint": "^6.8.0",
     "eslint-plugin-mocha": "^5.2.1",
     "mocha": "^7.1.1"
   }

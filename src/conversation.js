@@ -1,65 +1,25 @@
 'use strict';
-/*
-  Many thanks to https://github.com/howdyai/botkit/blob/master/slack_bot.js
-  Where most of this was stolen from
-*/
-
 const excuse = require('huh');
 const os = require('os');
 
-const hi = (bot, message) => {
-  bot.api.reactions.add({
-    timestamp: message.ts,
-    channel: message.channel,
-    name: 'robot_face',
-  }, function(err) {
+const hi = async (bot, message) => {
+  try {
+    await bot.api.reactions.add({
+      timestamp: message.ts,
+      channel: message.channel,
+      name: 'robot_face',
+    });
+  } catch (err) {
     if (err) {
-      bot.botkit.log('Failed to add emoji reaction :(', err);
+      console.log('Failed to add emoji reaction :(', err);
     }
-  });
-  bot.reply(message, 'Hello.');
+  }
+  await bot.reply(message, 'Hello.');
 };
 
-const indirectHi = (bot, message) => {
-  bot.api.reactions.add({
-    timestamp: message.ts,
-    channel: message.channel,
-    name: 'wave',
-  }, function(err) {
-    if (err) {
-      bot.botkit.log('Failed to add emoji reaction :(', err);
-    }
-  });
-};
-
-const shutdown = (bot, message) => {
-  bot.startConversation(message, function(err, convo) {
-    convo.ask('Are you sure you want me to shutdown?', [
-      {
-        pattern: bot.utterances.yes,
-        callback: function(response, convo) {
-          convo.say("Alright Sir, if you'll not be needing me, I'll close down for awhile");
-          convo.next();
-          setTimeout(function() {
-            process.exit();
-          }, 3000);
-        }
-      },
-      {
-        pattern: bot.utterances.no,
-        default: true,
-        callback: function(response, convo) {
-          convo.say('*ZORGBORT LIVES!*');
-          convo.next();
-        }
-      }
-    ]);
-  });
-};
-
-const uptime = (bot, message) => {
-  const formatUptime = function(uptime) {
-    var unit = 'second';
+const uptime = async (bot, message) => {
+  const formatUptime = uptime => {
+    let unit = 'second';
     if (uptime > 60) {
       uptime = uptime / 60;
       unit = 'minute';
@@ -68,7 +28,7 @@ const uptime = (bot, message) => {
       uptime = uptime / 60;
       unit = 'hour';
     }
-    if (uptime != 1) {
+    if (uptime !== 1) {
       unit = unit + 's';
     }
 
@@ -77,35 +37,29 @@ const uptime = (bot, message) => {
   };
   const hostname = os.hostname();
   const uptime = formatUptime(process.uptime());
-  const reponse = ':robot_face: I am a bot named <@' + bot.identity.name +
-          '>. I have been running for ' + uptime + ' on ' + hostname + '.';
-  bot.reply(message, reponse);
+  // @todo figure out how to get the bot's name from the API and add it to the response. [ST 2020/03/18]
+  const response = ':robot_face: I am a bot, and I have been running for ' + uptime + ' on ' + hostname + '.';
+  await bot.reply(message, response);
 };
 
-const defaultExcuse = (bot, message) => {
+const defaultExcuse = async (bot, message) => {
   const msg = message.text;
   const reason = excuse.get('en');
-  bot.reply(message, `Sorry, I don't know how to _${msg}_. It must be *${reason}!*`);
+  await bot.reply(message, `Sorry, I don't know how to _${msg}_. It must be *${reason}!*`);
 };
 
-const listUsers = (bot, message) => {
-  bot.api.users.list({}, (err, resp) => {
-    if (err || !resp.ok) {
-      bot.reply(message, `Error: ${err.message} (stack trace in logs)`);
-      console.error(err);
-    }
+const listUsers = async (bot, message) => {
+  try {
+    const resp = await bot.api.users.list();
     const users = resp.members.map(obj => `${obj.id}: ${obj.real_name}`);
     /* eslint-disable-next-line quotes */
-    bot.reply(message, 'Users: ' + users.join("\n"));
-  });
+    await bot.reply(message, 'Users: ' + users.join("\n"));
+  } catch(err) {
+    if (err) {
+      await bot.reply(message, `Error: ${err.message} (stack trace in logs)`);
+      console.log(err);
+    }
+  }
 };
 
-const mention = ['direct_message', 'direct_mention', 'mention'];
-module.exports = bot => {
-  bot.hears(['hello', 'hi', 'howdy', 'sup', 'howzit'], mention, hi);
-  bot.hears(['hello', 'hi', 'howdy', 'sup', 'howzit', 'good morning'], 'message_received', indirectHi);
-  bot.hears(['shutdown', 'powerdown'], mention, shutdown);
-  bot.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'], mention, uptime);
-  bot.hears(['list users'], mention, listUsers);
-  bot.hears('', mention, defaultExcuse);
-};
+module.exports = { hi, uptime, defaultExcuse, listUsers };
