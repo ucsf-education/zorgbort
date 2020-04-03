@@ -18,7 +18,7 @@ This will give you the details to fill in for your `.env` file.
 BOT_TOKEN="TOKEN"
 CLIENT_ID="CLIENTID"
 CLIENT_SECRET="SECRET"
-CLIENT_SIGNING_SECRET="SECRET"
+CLIENT_SIGNING_SECRET="SIGNING_SECRET"
 VERIFICATION_TOKEN="VERIFICATION_TOKEN"
 GITHUB_TOKEN="TOKEN"
 SSH_KEY_PASSPHRASE="ZORGBORT Passphrase"
@@ -55,7 +55,7 @@ You shouldn't need to do this it happens automatically using heroku's github int
 4. `heroku config:set BOT_TOKEN="BOT_TOKEN"`
 5. `heroku config:set CLIENT_ID="ID"`
 6. `heroku config:set CLIENT_SECRET="SECRET"`
-7. `heroku config:set CLIENT_SIGNING_SECRET="SECRET"
+7. `heroku config:set CLIENT_SIGNING_SECRET="SIGNING_SECRET"`
 8. `heroku config:set VERIFICATION_TOKEN="VERIFICATION_TOKEN"`
 9. `heroku config:set SSH_KEY_PASSPHRASE="ZORGBORT Passphrase"`
 10. `heroku config:add SSH_PRIVATE_KEY="$(cat KEYFILE)"`
