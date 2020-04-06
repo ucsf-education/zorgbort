@@ -59,7 +59,6 @@ const releaseInteraction = async (bot, message) => {
   const blockAction = message.incoming_message.channelData.actions[0];
   if (blockAction.block_id === releaseListChooseProject) {
     const selection = blockAction.value;
-
     let person = '<@' + message.user + '>';
     if (message.channel[0] === 'D') { // D indicates direct message.
       person = 'You';

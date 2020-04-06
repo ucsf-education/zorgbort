@@ -286,11 +286,10 @@ const chooseReleaseType = async (bot, message, blockAction) => {
   reply.blocks.splice(1, 0, {
     'type': 'section',
     'text': {
-      'type': 'plain_text',
+      'type': 'mrkdwn',
       'text': text,
     }
   });
-  console.log(reply);
   await bot.replyInteractive(message, reply);
 };
 
@@ -336,7 +335,7 @@ const doRelease = async (bot, message, blockAction) => {
   const validUsers = VALID_RELEASE_USERS.split(',');
   if (! validUsers.includes(user)) {
     try {
-      const response = await bot.api.users.info({user: message.user});
+      const response = await bot.api.users.info({ user });
       let bestName = 'Dave';
       if (response.ok) {
         bestName = response.user.profile.first_name ? response.user.profile.first_name : response.user.name;
@@ -394,7 +393,7 @@ const doRelease = async (bot, message, blockAction) => {
         {
           'type': 'section',
           'text': {
-            'type': 'plain_text',
+            'type': 'mrkdwn',
             'text': `${person} chose to release a ${releaseType} version of ${repo}.`
           }
         },
