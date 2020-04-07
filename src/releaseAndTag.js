@@ -355,7 +355,7 @@ const doRelease = async (bot, message, blockAction) => {
       {
         'type': 'section',
         'text': {
-          'type': 'plain_text',
+          'type': 'mrkdwn',
           'text': `${person} chose to release a ${releaseType} version of ${repo}.`
         }
       },
