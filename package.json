@@ -18,20 +18,20 @@
   },
   "homepage": "https://github.com/ucsf-ckm/zorgbort#readme",
   "dependencies": {
-    "@octokit/rest": "^16.15.0",
+    "@octokit/rest": "^16.43.2",
     "app-root-path": "^3.0.0",
-    "botbuilder-adapter-slack": "^1.0.8",
+    "botbuilder-adapter-slack": "^1.0.13",
     "botbuilder-storage-mongodb": "^0.9.5",
-    "botkit": "^4.6.2",
+    "botkit": "^4.10.0",
     "botkit-plugin-cms": "^1.0.3",
     "cheese-name": "^1.0.0",
     "dog-breed-names": "^2.0.2",
     "dotenv": "^7.0.0",
     "generate-github-release-notes": "^1.2.1",
     "huh": "^2.0.1",
-    "moment": "^2.19.3",
+    "moment": "^2.27.0",
     "mz": "^2.6.0",
-    "nodegit": "^0.26.5",
+    "nodegit": "^0.27.0",
     "rimraf": "^2.6.1",
     "uniqueid": "^1.0.0"
   },
@@ -41,6 +41,6 @@
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-plugin-mocha": "^5.2.1",
-    "mocha": "^7.1.1"
+    "mocha": "^7.2.0"
   }
 }
