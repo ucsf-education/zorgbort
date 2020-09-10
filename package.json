@@ -27,7 +27,7 @@
     "cheese-name": "^1.0.0",
     "dog-breed-names": "^2.0.2",
     "dotenv": "^7.0.0",
-    "generate-github-release-notes": "^1.2.1",
+    "generate-github-release-notes": "^2.0.1",
     "huh": "^2.0.1",
     "moment": "^2.27.0",
     "mz": "^2.6.0",
