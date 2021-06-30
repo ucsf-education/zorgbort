@@ -28,10 +28,7 @@ VALID_RELEASE_USERS="SLACKID,SLACKID2"
 PORT=8899
 ```
 4. Run ZORBORT with `npm start`
-
-
-test ZORBORT with `npm test`
-
+5. Test ZORBORT with `npm test`
 
 ## Heroku Deployment
 
@@ -61,7 +58,6 @@ You shouldn't need to do this it happens automatically using heroku's github int
 10. `heroku config:add SSH_PRIVATE_KEY="$(cat KEYFILE)"`
 11. `heroku config:add SSH_PUBLIC_KEY="$(cat PUBLICKEYFILE)"`
 12. `heroku config:set VALID_RELEASE_USERS="SLACKID,SLACKID2"`
-
 
 Go to https://zorgbort.herokuapp.com/login to setup oauth
 
