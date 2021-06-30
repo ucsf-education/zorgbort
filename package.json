@@ -24,7 +24,6 @@
     "botbuilder-storage-mongodb": "^0.9.5",
     "botkit": "^4.10.0",
     "botkit-plugin-cms": "^1.0.3",
-    "cheese-name": "^1.0.0",
     "dog-breed-names": "^2.0.2",
     "dotenv": "^7.0.0",
     "generate-github-release-notes": "^2.0.1",
