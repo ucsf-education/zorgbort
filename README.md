@@ -1,11 +1,11 @@
-# ZORGBORT (an Ilios bot) [![Build Status](https://travis-ci.org/ucsf-ckm/zorgbort.svg?branch=master)](https://travis-ci.org/ucsf-ckm/zorgbort)
+# ZORGBORT (an Ilios bot)
 
 Zorgbort is going to make common tasks easier to do.
 
 ## Running Locally:
 
-You'll need a publicly accessible address to configure slack oauth
-You can create a tunnel with https://www.npmjs.com/package/localtunnel 
+You'll need a publicly accessible address to configure slack oauth.
+You can create a tunnel with https://www.npmjs.com/package/localtunnel
 and run  `lt --port 8899 -s zorgbort-stage` to connect
 
 You'll need to configure a Slack app to test with at https://api.slack.com/apps
@@ -44,7 +44,7 @@ PORT=8899
 
 ## Deploying to heroku 
 
-You shouldn't need to do this it happens automatically using heroku's github integration
+You shouldn't need to do this it happens automatically using heroku's github integration.
 
 1. `heroku create`
 2. `heroku addons:create mongolab:sandbox`
@@ -59,7 +59,7 @@ You shouldn't need to do this it happens automatically using heroku's github int
 11. `heroku config:add SSH_PUBLIC_KEY="$(cat PUBLICKEYFILE)"`
 12. `heroku config:set VALID_RELEASE_USERS="SLACKID,SLACKID2"`
 
-Go to https://zorgbort.herokuapp.com/login to setup oauth
+Go to https://zorgbort.herokuapp.com/login to setup oauth.
 
 ## Acknowledgments
 
