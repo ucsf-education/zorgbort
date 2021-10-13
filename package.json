@@ -1,0 +1,28 @@
+{
+  "name": "zorgbort",
+  "version": "2.0.0",
+  "description": "Zorgbort does Iliosy things well",
+  "main": "app.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ucsf-ckm/zorgbort.git"
+  },
+  "author": "Ilios Team (info@iliosproject.org)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ucsf-ckm/zorgbort/issues"
+  },
+  "homepage": "https://github.com/ucsf-ckm/zorgbort#README.md",
+  "dependencies": {
+    "@octokit/rest": "^18.12.0",
+    "@slack/bolt": "^3.3.0",
+    "dotenv": "^9.0.2"
+  }
+}
