@@ -1,4 +1,5 @@
 const { releaseList } = require('../lib/releaseList');
+const { runTagWorkflow } = require('../lib/runTagWorkflow');
 
 module.exports = class Home {
   homeView = null;
@@ -21,6 +22,18 @@ module.exports = class Home {
     app.action('reload_home', async ({ body, ack, client }) => {
       await ack();
       this.homeOpened(body.user.name, body.user.id, client);
+    });
+    app.action('release_project_chooser', async ({ body, ack, client }) => {
+      await ack();
+      this.releaseProjectChooser(body, client);
+    });
+    app.action('choose_release_type', async ({ body, ack, client }) => {
+      await ack();
+      this.releaseTypeChooser(body, client);
+    });
+    app.action('release_project', async ({ body, ack, client }) => {
+      await ack();
+      this.releaseProject(body, client);
     });
   }
 
@@ -80,6 +93,15 @@ module.exports = class Home {
               "emoji": true
             },
             "action_id": "list_releases_chooser"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Release Project",
+              "emoji": true
+            },
+            "action_id": "release_project_chooser"
           }
         ]
       },
@@ -183,6 +205,138 @@ module.exports = class Home {
       "text": {
         "type": "mrkdwn",
         "text": `Releases For ${name}:\n * ` + list,
+      }
+    });
+    
+    await client.views.update({
+      view_id: progress.view.id,
+      hash: progress.view.hash,
+      view: {
+        type: 'home',
+        // View identifier
+        callback_id: 'home_view',
+        blocks
+      }
+    });
+  }
+
+  async releaseProjectChooser(body, client) {
+    const blocks = await this.getDefaultBlocks();
+    blocks.push({
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "What project would you like releases for?"
+      },
+      "accessory": {
+        "action_id": "choose_release_type",
+        "type": "static_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Ilios Projects"
+        },
+        "options": [
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Test Release Workspace"
+            },
+            "value": "jrjohnson/test-release-workspace"
+          },
+        ]
+      }
+    });
+    
+    await client.views.update({
+      view_id: body.view.id,
+      hash: body.view.hash,
+      view: {
+        type: 'home',
+        // View identifier
+        callback_id: 'home_view',
+        title: {
+          type: 'plain_text',
+          text: 'Release For'
+        },
+        blocks
+      }
+    });
+  }
+
+  async releaseTypeChooser(body, client) {
+    const project = body.actions[0]["selected_option"].value;
+    const name = body.actions[0]["selected_option"].text.text;
+    const blocks = await this.getDefaultBlocks();
+    blocks.push({
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": `What type of release for ${name}`,
+      },
+      "accessory": {
+        "action_id": "release_project",
+        "type": "static_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Release Type"
+        },
+        "options": [
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Major"
+            },
+            "value": `${project}x::xmajor`
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Minor"
+            },
+            "value": `${project}x::xminor`
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Patch"
+            },
+            "value": `${project}x::xpatch`
+          },
+        ]
+      }
+    });
+    
+    await client.views.update({
+      view_id: body.view.id,
+      hash: body.view.hash,
+      view: {
+        type: 'home',
+        // View identifier
+        callback_id: 'home_view',
+        title: {
+          type: 'plain_text',
+          text: 'Release Type'
+        },
+        blocks
+      }
+    });
+  }
+
+  async releaseProject(body, client) {
+    const { value } = body.actions[0]["selected_option"];
+    const [project, type] = value.split('x::x');
+    const [owner, repo] = project.split('/');
+    const progress = await this.showProgressSpinner(body, client, `building ${type} release for ${project}`);
+
+    await runTagWorkflow(owner, repo, type);
+    console.log('victory', result);
+    
+    const blocks = await this.getDefaultBlocks();
+    blocks.push({
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "Done!",
       }
     });
     
