@@ -5,11 +5,10 @@ module.exports = class Conversation extends Ilios {
     super(app);
     this.interactionType = 'conversation';
     app.message(/.*/, async ({ say, message }) => {
-      await this.validateUser(say, message.user);
-      const blocks = await this.getNavigationBlocks();
-      await say({
-        blocks,
-      });
+      await this.startConversation(message.user, say);
+    });
+    app.event('app_mention', async ({event, say}) => {
+      await this.startConversation(event.user, say);
     });
     app.action(`${this.interactionType}_list_releases_chooser`, async ({ ack, body, respond }) => {
       await ack();
@@ -36,6 +35,18 @@ module.exports = class Conversation extends Ilios {
       await ack();
       await this.validateUser(respond, body.user.id);
       await this.releaseProject(action, respond);
+    });
+  }
+
+  async startConversation(userId, say) {
+    await this.validateUser(say, userId);
+    const blocks = await this.getNavigationBlocks();
+    await say({
+      text: {
+        type: "mrkdwn",
+        text: `Welcome message and options`,
+      },
+      blocks,
     });
   }
 
