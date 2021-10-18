@@ -1,65 +1,105 @@
-'use strict';
-const excuse = require('huh');
-const os = require('os');
+const Ilios = require('./ilios.js');
 
-const hi = async (bot, message) => {
-  try {
-    await bot.api.reactions.add({
-      timestamp: message.ts,
-      channel: message.channel,
-      name: 'robot_face',
+module.exports = class Conversation extends Ilios {
+  constructor(app) {
+    super(app);
+    this.interactionType = 'conversation';
+    app.message(/.*/, async ({ say, message }) => {
+      await this.startConversation(message.user, say);
     });
-  } catch (err) {
-    if (err) {
-      console.log('Failed to add emoji reaction :(', err);
+    app.event('app_mention', async ({ event, say }) => {
+      await this.startConversation(event.user, say);
+    });
+    app.action(`${this.interactionType}_list_releases_chooser`, async ({ ack, body, respond }) => {
+      await ack();
+      await this.validateUser(respond, body.user.id);
+      const blocks = await this.getReleaseChooserBlocks();
+      await respond({ blocks, replace_original: true });
+    });
+    app.action(
+      `${this.interactionType}_list_releases_for`,
+      async ({ action, ack, body, respond }) => {
+        await ack();
+        await this.validateUser(respond, body.user.id);
+        await this.listReleasesFor(action, respond);
+      }
+    );
+    app.action(
+      `${this.interactionType}_release_project_chooser`,
+      async ({ action, ack, body, respond }) => {
+        await ack();
+        await this.validateUser(respond, body.user.id);
+        await this.releaseProjectChooser(action, respond);
+      }
+    );
+    app.action(
+      `${this.interactionType}_choose_release_type`,
+      async ({ action, ack, body, respond }) => {
+        await ack();
+        await this.validateUser(respond, body.user.id);
+        await this.releaseTypeChooser(action, respond);
+      }
+    );
+    app.action(
+      `${this.interactionType}_release_project`,
+      async ({ action, ack, body, respond }) => {
+        await ack();
+        await this.validateUser(respond, body.user.id);
+        await this.releaseProject(action, respond);
+      }
+    );
+  }
+
+  async startConversation(userId, say) {
+    await this.validateUser(say, userId);
+    const blocks = await this.getNavigationBlocks();
+    await say({
+      text: {
+        type: 'mrkdwn',
+        text: `Welcome message and options`,
+      },
+      blocks,
+    });
+  }
+
+  async validateUser(respond, userId) {
+    if (!this.isUserValid(userId)) {
+      await respond("I'm sorry, you're not authorized for this application.");
+      throw new Error(`${userId} isn't in VALID_RELEASE_USERS.`);
     }
   }
-  await bot.reply(message, 'Hello.');
-};
 
-const uptime = async (bot, message) => {
-  const formatUptime = uptime => {
-    let unit = 'second';
-    if (uptime > 60) {
-      uptime = uptime / 60;
-      unit = 'minute';
-    }
-    if (uptime > 60) {
-      uptime = uptime / 60;
-      unit = 'hour';
-    }
-    if (uptime !== 1) {
-      unit = unit + 's';
-    }
+  async showProgressSpinner(respond, what) {
+    const blocks = await this.getProgressSpinnerBlocks(what);
+    await respond({ blocks, replace_original: true });
+  }
 
-    uptime = uptime + ' ' + unit;
-    return uptime;
-  };
-  const hostname = os.hostname();
-  const uptime = formatUptime(process.uptime());
-  // @todo figure out how to get the bot's name from the API and add it to the response. [ST 2020/03/18]
-  const response = ':robot_face: I am a bot, and I have been running for ' + uptime + ' on ' + hostname + '.';
-  await bot.reply(message, response);
-};
+  async listReleasesFor(action, respond) {
+    const project = action.selected_option.value;
+    const name = action.selected_option.text.text;
+    await this.showProgressSpinner(respond, `releases for *${name}*`);
+    const blocks = await this.getReleaseListBlocksFor(project, name);
 
-const defaultExcuse = async (bot, message) => {
-  const msg = message.text;
-  const reason = excuse.get('en');
-  await bot.reply(message, `Sorry, I don't know how to _${msg}_. It must be *${reason}!*`);
-};
+    await respond({ blocks, replace_original: true });
+  }
 
-const listUsers = async (bot, message) => {
-  try {
-    const resp = await bot.api.users.list();
-    const users = resp.members.map(obj => `${obj.id}: ${obj.real_name}`);
-    /* eslint-disable-next-line quotes */
-    await bot.reply(message, 'Users: ' + users.join("\n"));
-  } catch(err) {
-    if (err) {
-      await bot.reply(message, `Error: ${err.message} (stack trace in logs)`);
-      console.log(err);
-    }
+  async releaseProjectChooser(action, respond) {
+    const blocks = await this.getReleaseProjectChooserBlocks();
+    await respond({ blocks, replace_original: true });
+  }
+
+  async releaseTypeChooser(action, respond) {
+    const project = action.selected_option.value;
+    const name = action.selected_option.text.text;
+    const blocks = await this.getReleaseTypeChooseBlocksFor(project, name);
+    await respond({ blocks, replace_original: true });
+  }
+
+  async releaseProject(action, respond) {
+    const { value } = action.selected_option;
+    const { project, type, owner, repo } = this.getDetailsFromReleaseMessage(value);
+    await this.showProgressSpinner(respond, `building ${type} release for ${project}`);
+    const blocks = await this.doReleaseProjectFor(owner, repo, type);
+    await respond({ blocks, replace_original: true });
   }
 };
-
-module.exports = { hi, uptime, defaultExcuse, listUsers };
