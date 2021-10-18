@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { App } = require('@slack/bolt');
 const Home = require('./src/home');
+const Conversation = require('./src/conversation');
 
 // Initializes app with bot token and signing secret
 const app = new App({
@@ -10,8 +11,8 @@ const app = new App({
 
 try {
   new Home(app);
-}
-catch (error) {
+  new Conversation(app);
+} catch (error) {
   console.error(error);
 }
 

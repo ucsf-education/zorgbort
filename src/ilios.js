@@ -3,11 +3,9 @@ const { runTagWorkflow } = require('../lib/runTagWorkflow');
 
 module.exports = class Home {
   isHome = false;
+  interactionType = null;
 
-  constructor(app) {
-  }
-
-  async getDefaultBlocks() {
+  async getNavigationBlocks() {
     const elements = [
       {
         "type": "button",
@@ -16,7 +14,7 @@ module.exports = class Home {
           "text": "List Releases",
           "emoji": true
         },
-        "action_id": "list_releases_chooser"
+        "action_id": `${this.interactionType}_list_releases_chooser`
       },
       {
         "type": "button",
@@ -25,7 +23,7 @@ module.exports = class Home {
           "text": "Release Project",
           "emoji": true
         },
-        "action_id": "release_project_chooser"
+        "action_id": `${this.interactionType}_release_project_chooser`
       }
     ];
     if (this.isHome) {
@@ -37,7 +35,7 @@ module.exports = class Home {
           "emoji": true
         },
         "style": "primary",
-        "action_id": "reload_home"
+        "action_id": `${this.interactionType}_reload_home`
       });
     }
     return [
@@ -55,58 +53,56 @@ module.exports = class Home {
   }
 
   async getReleaseChooserBlocks() {
-    const blocks = await this.getDefaultBlocks();
-    blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "What project would you like releases for?"
-      },
-      "accessory": {
-        "action_id": "list_releases_for",
-        "type": "static_select",
-        "placeholder": {
-          "type": "plain_text",
-          "text": "Ilios Projects"
+    return [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "What project would you like releases for?"
         },
-        "options": [
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Frontend"
-            },
-            "value": "frontend"
+        "accessory": {
+          "action_id": `${this.interactionType}_list_releases_for`,
+          "type": "static_select",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "Ilios Projects"
           },
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Common"
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Frontend"
+              },
+              "value": "frontend"
             },
-            "value": "common"
-          },
-        ]
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Common"
+              },
+              "value": "common"
+            },
+          ]
+        }
       }
-    });
-
-    return blocks;
+    ]
   }
 
   async getProgressSpinnerBlocks(what) {
-    const blocks = await this.getDefaultBlocks();
-    blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": `Woking on ${what}....`,
-      },
-      "accessory": {
-        type: 'image',
-        image_url: 'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
-        alt_text: 'Cat Typing'
+    return [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": `Woking on ${what}....`,
+        },
+        "accessory": {
+          type: 'image',
+          image_url: 'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
+          alt_text: 'Cat Typing'
+        }
       }
-    });
-
-    return blocks;
+    ]
   }
 
   async getReleaseListBlocksFor(project, name) {
@@ -117,90 +113,87 @@ module.exports = class Home {
       list = list.substr(0, 2000) + "\n\n *List Truncated at Maximum Length*";
     }
     
-    const blocks = await this.getDefaultBlocks();
-    blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": `Releases For ${name}:\n * ` + list,
+    return [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": `Releases For ${name}:\n * ` + list,
+        }
       }
-    });
-
-    return blocks;
+    ]
   }
 
   async getReleaseProjectChooserBlocks() {
-    const blocks = await this.getDefaultBlocks();
-    blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "What project would you like releases for?"
-      },
-      "accessory": {
-        "action_id": "choose_release_type",
-        "type": "static_select",
-        "placeholder": {
-          "type": "plain_text",
-          "text": "Ilios Projects"
+    return [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "What project would you like releases for?"
         },
-        "options": [
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Test Release Workspace"
-            },
-            "value": "jrjohnson/test-release-workspace"
+        "accessory": {
+          "action_id": `${this.interactionType}_choose_release_type`,
+          "type": "static_select",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "Ilios Projects"
           },
-        ]
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Test Release Workspace"
+              },
+              "value": "jrjohnson/test-release-workspace"
+            },
+          ]
+        }
       }
-    });
-
-    return blocks;
+    ]
   }
 
   async getReleaseTypeChooseBlocksFor(project, name) {
-    const blocks = await this.getDefaultBlocks();
-    blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": `What type of release for ${name}`,
-      },
-      "accessory": {
-        "action_id": "release_project",
-        "type": "static_select",
-        "placeholder": {
-          "type": "plain_text",
-          "text": "Release Type"
+    return [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": `What type of release for ${name}`,
         },
-        "options": [
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Major"
-            },
-            "value": `${project}x::xmajor`
+        "accessory": {
+          "action_id": `${this.interactionType}_release_project`,
+          "type": "static_select",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "Release Type"
           },
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Minor"
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Major"
+              },
+              "value": `${project}x::xmajor`
             },
-            "value": `${project}x::xminor`
-          },
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Patch"
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Minor"
+              },
+              "value": `${project}x::xminor`
             },
-            "value": `${project}x::xpatch`
-          },
-        ]
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Patch"
+              },
+              "value": `${project}x::xpatch`
+            },
+          ]
+        }
       }
-    });
-
-    return blocks;
+    ]
   }
 
   getDetailsFromReleaseMessage(str) {
@@ -212,15 +205,15 @@ module.exports = class Home {
 
   async doReleaseProjectFor(owner, repo, type) {
     await runTagWorkflow(owner, repo, type);
-    const blocks = await this.getDefaultBlocks();
-    blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "Done!",
+    
+    return [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Done!",
+        }
       }
-    });
-
-    return blocks;
+    ]
   }
 }
