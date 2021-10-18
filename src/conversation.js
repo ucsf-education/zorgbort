@@ -7,7 +7,7 @@ module.exports = class Conversation extends Ilios {
     app.message(/.*/, async ({ say, message }) => {
       await this.startConversation(message.user, say);
     });
-    app.event('app_mention', async ({event, say}) => {
+    app.event('app_mention', async ({ event, say }) => {
       await this.startConversation(event.user, say);
     });
     app.action(`${this.interactionType}_list_releases_chooser`, async ({ ack, body, respond }) => {
@@ -16,26 +16,38 @@ module.exports = class Conversation extends Ilios {
       const blocks = await this.getReleaseChooserBlocks();
       await respond({ blocks, replace_original: true });
     });
-    app.action(`${this.interactionType}_list_releases_for`, async ({ action, ack, body, respond }) => {
-      await ack();
-      await this.validateUser(respond, body.user.id);
-      await this.listReleasesFor(action, respond);
-    });
-    app.action(`${this.interactionType}_release_project_chooser`, async ({ action, ack, body, respond }) => {
-      await ack();
-      await this.validateUser(respond, body.user.id);
-      await this.releaseProjectChooser(action, respond);
-    });
-    app.action(`${this.interactionType}_choose_release_type`, async ({ action, ack, body, respond }) => {
-      await ack();
-      await this.validateUser(respond, body.user.id);
-      await this.releaseTypeChooser(action, respond);
-    });
-    app.action(`${this.interactionType}_release_project`, async ({ action, ack, body, respond }) => {
-      await ack();
-      await this.validateUser(respond, body.user.id);
-      await this.releaseProject(action, respond);
-    });
+    app.action(
+      `${this.interactionType}_list_releases_for`,
+      async ({ action, ack, body, respond }) => {
+        await ack();
+        await this.validateUser(respond, body.user.id);
+        await this.listReleasesFor(action, respond);
+      }
+    );
+    app.action(
+      `${this.interactionType}_release_project_chooser`,
+      async ({ action, ack, body, respond }) => {
+        await ack();
+        await this.validateUser(respond, body.user.id);
+        await this.releaseProjectChooser(action, respond);
+      }
+    );
+    app.action(
+      `${this.interactionType}_choose_release_type`,
+      async ({ action, ack, body, respond }) => {
+        await ack();
+        await this.validateUser(respond, body.user.id);
+        await this.releaseTypeChooser(action, respond);
+      }
+    );
+    app.action(
+      `${this.interactionType}_release_project`,
+      async ({ action, ack, body, respond }) => {
+        await ack();
+        await this.validateUser(respond, body.user.id);
+        await this.releaseProject(action, respond);
+      }
+    );
   }
 
   async startConversation(userId, say) {
@@ -43,7 +55,7 @@ module.exports = class Conversation extends Ilios {
     const blocks = await this.getNavigationBlocks();
     await say({
       text: {
-        type: "mrkdwn",
+        type: 'mrkdwn',
         text: `Welcome message and options`,
       },
       blocks,
@@ -67,7 +79,7 @@ module.exports = class Conversation extends Ilios {
     const name = action.selected_option.text.text;
     await this.showProgressSpinner(respond, `releases for *${name}*`);
     const blocks = await this.getReleaseListBlocksFor(project, name);
-    
+
     await respond({ blocks, replace_original: true });
   }
 
@@ -86,8 +98,8 @@ module.exports = class Conversation extends Ilios {
   async releaseProject(action, respond) {
     const { value } = action.selected_option;
     const { project, type, owner, repo } = this.getDetailsFromReleaseMessage(value);
-    const progress = await this.showProgressSpinner(respond, `building ${type} release for ${project}`);
+    await this.showProgressSpinner(respond, `building ${type} release for ${project}`);
     const blocks = await this.doReleaseProjectFor(owner, repo, type);
     await respond({ blocks, replace_original: true });
   }
-}
+};

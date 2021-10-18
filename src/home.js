@@ -8,10 +8,10 @@ module.exports = class Home extends Ilios {
     this.isHome = true;
     this.interactionType = 'home';
 
-    app.event('app_home_opened', async ({event, client}) => {
+    app.event('app_home_opened', async ({ event, client }) => {
       await this.validateUser(client, event.user);
       const userQuery = await client.users.info({
-        user: event.user
+        user: event.user,
       });
       this.homeOpened(userQuery.user.name, event.user, client);
     });
@@ -56,14 +56,14 @@ module.exports = class Home extends Ilios {
           callback_id: 'home_view',
           blocks: [
             {
-              "type": "section",
-              "text": {
-                "type": "mrkdwn",
-                "text": `I'm sorry, you're not authorized for this application.`
-              }
-            }
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `I'm sorry, you're not authorized for this application.`,
+              },
+            },
           ],
-        }
+        },
       });
       throw new Error(`${userId} isn't in VALID_RELEASE_USERS.`);
     }
@@ -75,27 +75,27 @@ module.exports = class Home extends Ilios {
       /* the user that opened your app's app home */
       user_id: userId,
       /* the view object that appears in the app home*/
-      view: await this.getDefaultHome(username)
+      view: await this.getDefaultHome(username),
     });
   }
 
   async getDefaultHome(username) {
     const blocks = await this.getNavigationBlocks();
-    blocks.unshift(await this.getWelcomeBlock(username))
-    return  {
+    blocks.unshift(await this.getWelcomeBlock(username));
+    return {
       type: 'home',
       callback_id: 'home_view',
       blocks,
-    }
+    };
   }
 
   async getWelcomeBlock(username) {
     return {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": `Hi ${username}! Ready to do something awesome together?`
-      }
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `Hi ${username}! Ready to do something awesome together?`,
+      },
     };
   }
 
@@ -103,7 +103,7 @@ module.exports = class Home extends Ilios {
     const releaseChooserBlocks = await this.getReleaseChooserBlocks();
     const navigationBlocks = await this.getNavigationBlocks();
     const blocks = [...navigationBlocks, ...releaseChooserBlocks];
-    
+
     await client.views.update({
       view_id: body.view.id,
       hash: body.view.hash,
@@ -113,10 +113,10 @@ module.exports = class Home extends Ilios {
         callback_id: 'home_view',
         title: {
           type: 'plain_text',
-          text: 'List Releases'
+          text: 'List Releases',
         },
-        blocks
-      }
+        blocks,
+      },
     });
   }
 
@@ -124,7 +124,7 @@ module.exports = class Home extends Ilios {
     const ourBlocks = await this.getProgressSpinnerBlocks(what);
     const navigationBlocks = await this.getNavigationBlocks();
     const blocks = [...navigationBlocks, ...ourBlocks];
-    
+
     return await client.views.update({
       view_id: body.view.id,
       hash: body.view.hash,
@@ -132,19 +132,19 @@ module.exports = class Home extends Ilios {
         type: 'home',
         // View identifier
         callback_id: 'home_view',
-        blocks
-      }
+        blocks,
+      },
     });
   }
 
   async listReleasesFor(body, client) {
-    const project = body.actions[0]["selected_option"].value;
-    const name = body.actions[0]["selected_option"].text.text;
+    const project = body.actions[0]['selected_option'].value;
+    const name = body.actions[0]['selected_option'].text.text;
     const progress = await this.showProgressSpinner(body, client, `releases for *${name}*`);
     const ourBlocks = await this.getReleaseListBlocksFor(project, name);
     const navigationBlocks = await this.getNavigationBlocks();
     const blocks = [...navigationBlocks, ...ourBlocks];
-    
+
     await client.views.update({
       view_id: progress.view.id,
       hash: progress.view.hash,
@@ -152,8 +152,8 @@ module.exports = class Home extends Ilios {
         type: 'home',
         // View identifier
         callback_id: 'home_view',
-        blocks
-      }
+        blocks,
+      },
     });
   }
 
@@ -161,7 +161,7 @@ module.exports = class Home extends Ilios {
     const ourBlocks = await this.getReleaseProjectChooserBlocks();
     const navigationBlocks = await this.getNavigationBlocks();
     const blocks = [...navigationBlocks, ...ourBlocks];
-    
+
     await client.views.update({
       view_id: body.view.id,
       hash: body.view.hash,
@@ -171,20 +171,20 @@ module.exports = class Home extends Ilios {
         callback_id: 'home_view',
         title: {
           type: 'plain_text',
-          text: 'Release For'
+          text: 'Release For',
         },
-        blocks
-      }
+        blocks,
+      },
     });
   }
 
   async releaseTypeChooser(body, client) {
-    const project = body.actions[0]["selected_option"].value;
-    const name = body.actions[0]["selected_option"].text.text;
+    const project = body.actions[0]['selected_option'].value;
+    const name = body.actions[0]['selected_option'].text.text;
     const ourBlocks = await this.getReleaseTypeChooseBlocksFor(project, name);
     const navigationBlocks = await this.getNavigationBlocks();
     const blocks = [...navigationBlocks, ...ourBlocks];
-    
+
     await client.views.update({
       view_id: body.view.id,
       hash: body.view.hash,
@@ -194,21 +194,25 @@ module.exports = class Home extends Ilios {
         callback_id: 'home_view',
         title: {
           type: 'plain_text',
-          text: 'Release Type'
+          text: 'Release Type',
         },
-        blocks
-      }
+        blocks,
+      },
     });
   }
 
   async releaseProject(body, client) {
-    const { value } = body.actions[0]["selected_option"];
+    const { value } = body.actions[0]['selected_option'];
     const { project, type, owner, repo } = this.getDetailsFromReleaseMessage(value);
-    const progress = await this.showProgressSpinner(body, client, `building ${type} release for ${project}`);
+    const progress = await this.showProgressSpinner(
+      body,
+      client,
+      `building ${type} release for ${project}`
+    );
     const ourBlocks = await this.doReleaseProjectFor(owner, repo, type);
     const navigationBlocks = await this.getNavigationBlocks();
     const blocks = [...navigationBlocks, ...ourBlocks];
-    
+
     await client.views.update({
       view_id: progress.view.id,
       hash: progress.view.hash,
@@ -216,8 +220,8 @@ module.exports = class Home extends Ilios {
         type: 'home',
         // View identifier
         callback_id: 'home_view',
-        blocks
-      }
+        blocks,
+      },
     });
   }
-}
+};

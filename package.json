@@ -8,8 +8,10 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha",
-    "start": "nodemon app.js"
+    "test": "eslint . --cache",
+    "start": "nodemon app.js",
+    "lint": "eslint . --cache",
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -23,7 +25,18 @@
   "homepage": "https://github.com/ucsf-ckm/zorgbort#README.md",
   "dependencies": {
     "@octokit/rest": "^18.12.0",
-    "@slack/bolt": "^3.3.0",
-    "dotenv": "^9.0.2"
-  }
+    "@slack/bolt": "^3.3.0"
+  },
+  "devDependencies": {
+    "dotenv": "^9.0.2",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "pre-commit": "^1.2.2",
+    "prettier": "^2.4.1"
+  },
+  "pre-commit": [
+    "lint"
+  ]
 }
