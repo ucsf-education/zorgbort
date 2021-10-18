@@ -1,7 +1,8 @@
-service: serverless-bolt-js
+service: zorgbort
 frameworkVersion: '2'
 useDotenv: true
 provider:
+  region: us-west-2
   name: aws
   runtime: nodejs14.x
   lambdaHashingVersion: 20201221
