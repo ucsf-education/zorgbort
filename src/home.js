@@ -9,6 +9,7 @@ module.exports = class Home extends Ilios {
     this.interactionType = 'home';
 
     app.event('app_home_opened', async ({event, client}) => {
+      await this.validateUser(client, event.user);
       const userQuery = await client.users.info({
         user: event.user
       });
@@ -16,28 +17,56 @@ module.exports = class Home extends Ilios {
     });
     app.action(`${this.interactionType}_reload_home`, async ({ body, ack, client }) => {
       await ack();
+      await this.validateUser(client, body.user.id);
       this.homeOpened(body.user.name, body.user.id, client);
     });
     app.action(`${this.interactionType}_list_releases_chooser`, async ({ body, ack, client }) => {
       await ack();
+      await this.validateUser(client, body.user.id);
       this.listReleasesChooser(body, client);
     });
     app.action(`${this.interactionType}_list_releases_for`, async ({ body, ack, client }) => {
       await ack();
+      await this.validateUser(client, body.user.id);
       this.listReleasesFor(body, client);
     });
     app.action(`${this.interactionType}_release_project_chooser`, async ({ body, ack, client }) => {
       await ack();
+      await this.validateUser(client, body.user.id);
       this.releaseProjectChooser(body, client);
     });
     app.action(`${this.interactionType}_choose_release_type`, async ({ body, ack, client }) => {
       await ack();
+      await this.validateUser(client, body.user.id);
       this.releaseTypeChooser(body, client);
     });
     app.action(`${this.interactionType}_release_project`, async ({ body, ack, client }) => {
       await ack();
+      await this.validateUser(client, body.user.id);
       this.releaseProject(body, client);
     });
+  }
+
+  async validateUser(client, userId) {
+    if (!this.isUserValid(userId)) {
+      await client.views.publish({
+        user_id: userId,
+        view: {
+          type: 'home',
+          callback_id: 'home_view',
+          blocks: [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": `I'm sorry, you're not authorized for this application.`
+              }
+            }
+          ],
+        }
+      });
+      throw new Error(`${userId} isn't in VALID_RELEASE_USERS.`);
+    }
   }
 
   async homeOpened(username, userId, client) {

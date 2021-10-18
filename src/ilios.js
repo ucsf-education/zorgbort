@@ -1,9 +1,18 @@
 const { releaseList } = require('../lib/releaseList');
 const { runTagWorkflow } = require('../lib/runTagWorkflow');
 
+if (!process.env.VALID_RELEASE_USERS) {
+  throw new Error('Error: Specify comma separated list of VALID_RELEASE_USERS in environment');
+}
+
 module.exports = class Home {
   isHome = false;
   interactionType = null;
+
+  isUserValid(userId) {
+    const validUsers = process.env.VALID_RELEASE_USERS.split(',').map(s => s.trim());
+    return validUsers.includes(userId);
+  }
 
   async getNavigationBlocks() {
     const elements = [
