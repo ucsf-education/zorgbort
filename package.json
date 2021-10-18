@@ -11,7 +11,9 @@
     "test": "eslint . --cache",
     "start": "nodemon --exec serverless offline --noPrependStageInUrl",
     "lint": "eslint . --cache",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "deploy:production": "serverless deploy --stage=prod --verbose",
+    "deploy:dev": "serverless deploy --stage=dev  --verbose"
   },
   "repository": {
     "type": "git",
