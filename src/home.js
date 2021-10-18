@@ -1,15 +1,19 @@
-const { releaseList } = require('../lib/releaseList');
-const { runTagWorkflow } = require('../lib/runTagWorkflow');
+const Ilios = require('./ilios.js');
 
-module.exports = class Home {
-  homeView = null;
+module.exports = class Home extends Ilios {
+  isHome = true;
 
   constructor(app) {
+    super(app);
     app.event('app_home_opened', async ({event, client}) => {
       const userQuery = await client.users.info({
         user: event.user
       });
       this.homeOpened(userQuery.user.name, event.user, client);
+    });
+    app.action('reload_home', async ({ body, ack, client }) => {
+      await ack();
+      this.homeOpened(body.user.name, body.user.id, client);
     });
     app.action('list_releases_chooser', async ({ body, ack, client }) => {
       await ack();
@@ -18,10 +22,6 @@ module.exports = class Home {
     app.action('list_releases_for', async ({ body, ack, client }) => {
       await ack();
       this.listReleasesFor(body, client);
-    });
-    app.action('reload_home', async ({ body, ack, client }) => {
-      await ack();
-      this.homeOpened(body.user.name, body.user.id, client);
     });
     app.action('release_project_chooser', async ({ body, ack, client }) => {
       await ack();
@@ -67,83 +67,8 @@ module.exports = class Home {
     };
   }
 
-  async getDefaultBlocks() {
-    return [
-      {
-        "type": "divider"
-      },
-      {
-        "type": "actions",
-        "elements": [
-          {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "text": "Home",
-              "emoji": true
-            },
-            "style": "primary",
-            "action_id": "reload_home"
-          },
-          {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "text": "List Releases",
-              "emoji": true
-            },
-            "action_id": "list_releases_chooser"
-          },
-          {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "text": "Release Project",
-              "emoji": true
-            },
-            "action_id": "release_project_chooser"
-          }
-        ]
-      },
-      {
-        "type": "divider"
-      },
-    ];
-  }
-
   async listReleasesChooser(body, client) {
-    const blocks = await this.getDefaultBlocks();
-    blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "What project would you like releases for?"
-      },
-      "accessory": {
-        "action_id": "list_releases_for",
-        "type": "static_select",
-        "placeholder": {
-          "type": "plain_text",
-          "text": "Ilios Projects"
-        },
-        "options": [
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Frontend"
-            },
-            "value": "frontend"
-          },
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Common"
-            },
-            "value": "common"
-          },
-        ]
-      }
-    });
+    const blocks = await this.getReleaseChooserBlocks();
     
     await client.views.update({
       view_id: body.view.id,
@@ -162,19 +87,7 @@ module.exports = class Home {
   }
 
   async showProgressSpinner(body, client, what) {
-    const blocks = await this.getDefaultBlocks();
-    blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": `Woking on ${what}....`,
-      },
-      "accessory": {
-        type: 'image',
-        image_url: 'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
-        alt_text: 'Cat Typing'
-      }
-    });
+    const blocks = await this.getProgressSpinnerBlocks(what);
     
     return await client.views.update({
       view_id: body.view.id,
@@ -192,21 +105,7 @@ module.exports = class Home {
     const project = body.actions[0]["selected_option"].value;
     const name = body.actions[0]["selected_option"].text.text;
     const progress = await this.showProgressSpinner(body, client, `releases for *${name}*`);
-    const releases = await releaseList('ilios', project);
-
-    let list = releases.join("\n * ");
-    if (list.length > 2999) {
-      list = list.substr(0, 2000) + "\n\n *List Truncated at Maximum Length*";
-    }
-    
-    const blocks = await this.getDefaultBlocks();
-    blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": `Releases For ${name}:\n * ` + list,
-      }
-    });
+    const blocks = await this.getReleaseListBlocksFor(project, name);
     
     await client.views.update({
       view_id: progress.view.id,
@@ -221,31 +120,7 @@ module.exports = class Home {
   }
 
   async releaseProjectChooser(body, client) {
-    const blocks = await this.getDefaultBlocks();
-    blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "What project would you like releases for?"
-      },
-      "accessory": {
-        "action_id": "choose_release_type",
-        "type": "static_select",
-        "placeholder": {
-          "type": "plain_text",
-          "text": "Ilios Projects"
-        },
-        "options": [
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Test Release Workspace"
-            },
-            "value": "jrjohnson/test-release-workspace"
-          },
-        ]
-      }
-    });
+    const blocks = await this.getReleaseProjectChooserBlocks();
     
     await client.views.update({
       view_id: body.view.id,
@@ -266,45 +141,7 @@ module.exports = class Home {
   async releaseTypeChooser(body, client) {
     const project = body.actions[0]["selected_option"].value;
     const name = body.actions[0]["selected_option"].text.text;
-    const blocks = await this.getDefaultBlocks();
-    blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": `What type of release for ${name}`,
-      },
-      "accessory": {
-        "action_id": "release_project",
-        "type": "static_select",
-        "placeholder": {
-          "type": "plain_text",
-          "text": "Release Type"
-        },
-        "options": [
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Major"
-            },
-            "value": `${project}x::xmajor`
-          },
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Minor"
-            },
-            "value": `${project}x::xminor`
-          },
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Patch"
-            },
-            "value": `${project}x::xpatch`
-          },
-        ]
-      }
-    });
+    const blocks = await this.getReleaseTypeChooseBlocksFor(project, name);
     
     await client.views.update({
       view_id: body.view.id,
@@ -324,21 +161,9 @@ module.exports = class Home {
 
   async releaseProject(body, client) {
     const { value } = body.actions[0]["selected_option"];
-    const [project, type] = value.split('x::x');
-    const [owner, repo] = project.split('/');
+    const { project, type, owner, repo } = this.getDetailsFromReleaseMessage(value);
     const progress = await this.showProgressSpinner(body, client, `building ${type} release for ${project}`);
-
-    await runTagWorkflow(owner, repo, type);
-    console.log('victory', result);
-    
-    const blocks = await this.getDefaultBlocks();
-    blocks.push({
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "Done!",
-      }
-    });
+    const blocks = await this.doReleaseProjectFor(owner, repo, type);
     
     await client.views.update({
       view_id: progress.view.id,
