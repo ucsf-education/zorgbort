@@ -163,6 +163,27 @@ module.exports = class Home {
               },
               "value": "jrjohnson/test-release-workspace"
             },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Ilios Common"
+              },
+              "value": "ilios/common"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Ilios Frontend"
+              },
+              "value": "ilios/frontend"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Ember Simple Charts"
+              },
+              "value": "ilios/ember-simple-charts"
+            },
           ]
         }
       }
