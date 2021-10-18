@@ -91,6 +91,13 @@ module.exports = class Home {
               },
               "value": "common"
             },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Simple Charts"
+              },
+              "value": "ember-simple-charts"
+            },
           ]
         }
       }
@@ -163,6 +170,32 @@ module.exports = class Home {
   }
 
   async getReleaseTypeChooseBlocksFor(project, name) {
+    const options = [
+      {
+        "text": {
+          "type": "plain_text",
+          "text": "Minor"
+        },
+        "value": `${project}x::xminor`
+      },
+      {
+        "text": {
+          "type": "plain_text",
+          "text": "Patch"
+        },
+        "value": `${project}x::xpatch`
+      },
+    ];
+    //We don't do major releases of the API
+    if (project !== 'ilios') {
+      options.unshift({
+        "text": {
+          "type": "plain_text",
+          "text": "Major"
+        },
+        "value": `${project}x::xmajor`
+      });
+    }
     return [
       {
         "type": "section",
@@ -177,29 +210,7 @@ module.exports = class Home {
             "type": "plain_text",
             "text": "Release Type"
           },
-          "options": [
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Major"
-              },
-              "value": `${project}x::xmajor`
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Minor"
-              },
-              "value": `${project}x::xminor`
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "Patch"
-              },
-              "value": `${project}x::xpatch`
-            },
-          ]
+          options,
         }
       }
     ]
@@ -219,8 +230,9 @@ module.exports = class Home {
       {
         "type": "section",
         "text": {
-          "type": "mrkdwn",
-          "text": "Done!",
+          "type": "plain_text",
+          "emoji": true,
+          "text": `:white_check_mark: Done! ${type} version of ${owner}/${repo} released! :rocket:`,
         }
       }
     ]
