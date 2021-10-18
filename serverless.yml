@@ -1,0 +1,20 @@
+service: serverless-bolt-js
+frameworkVersion: '2'
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  environment:
+    SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
+    SLACK_BOT_TOKEN: ${env:SLACK_BOT_TOKEN}
+    GITHUB_TOKEN: ${env:GITHUB_TOKEN}
+    VALID_RELEASE_USERS: ${env:VALID_RELEASE_USERS}
+functions:
+  slack:
+    handler: app.handler
+    events:
+      - http:
+          path: slack/events
+          method: post
+plugins:
+  - serverless-offline

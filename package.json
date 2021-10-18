@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "eslint . --cache",
-    "start": "nodemon app.js",
+    "start": "nodemon --exec serverless offline --noPrependStageInUrl",
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --fix"
   },
@@ -34,7 +34,9 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "pre-commit": "^1.2.2",
-    "prettier": "^2.4.1"
+    "prettier": "^2.4.1",
+    "serverless": "^2.63.0",
+    "serverless-offline": "^8.2.0"
   },
   "pre-commit": [
     "lint"
