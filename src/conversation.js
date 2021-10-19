@@ -4,11 +4,32 @@ module.exports = class Conversation extends Ilios {
   constructor(app) {
     super(app);
     this.interactionType = 'conversation';
-    app.message(/.*/, async ({ say, message }) => {
-      await this.startConversation(message.user, say);
+    app.message(/^list releases/, async ({ say, body, context }) => {
+      this.setDone(context);
+      await this.validateUser(say, body.event.user);
+      const blocks = await this.getReleaseChooserBlocks();
+      await say({ blocks });
     });
-    app.event('app_mention', async ({ event, say }) => {
-      await this.startConversation(event.user, say);
+    app.message(/^release/, async ({ say, body, context }) => {
+      this.setDone(context);
+      await this.validateUser(say, body.event.user);
+      await this.releaseProjectChooser(say);
+    });
+    app.event('app_mention', async ({ event, say, context }) => {
+      console.log(event);
+      if (event.text.startsWith('list releases') || event.text.endsWith('list releases')) {
+        this.setDone(context);
+        await this.validateUser(say, event.user);
+        const blocks = await this.getReleaseChooserBlocks();
+        await say({ blocks });
+      } else if (event.text.startsWith('release') || event.text.endsWith('release')) {
+        this.setDone(context);
+        await this.validateUser(say, event.user);
+        await this.releaseProjectChooser(say);
+      } else {
+        this.setDone(context);
+        await this.sendMenu(event.user, say);
+      }
     });
     app.action(`${this.interactionType}_list_releases_chooser`, async ({ ack, body, respond }) => {
       await ack();
@@ -26,10 +47,10 @@ module.exports = class Conversation extends Ilios {
     );
     app.action(
       `${this.interactionType}_release_project_chooser`,
-      async ({ action, ack, body, respond }) => {
+      async ({ ack, body, respond }) => {
         await ack();
         await this.validateUser(respond, body.user.id);
-        await this.releaseProjectChooser(action, respond);
+        await this.releaseProjectChooser(respond);
       }
     );
     app.action(
@@ -48,11 +69,40 @@ module.exports = class Conversation extends Ilios {
         await this.releaseProject(action, respond);
       }
     );
+    app.use(async ({ body, next, say, context }) => {
+      await next();
+      if (
+        body.event &&
+        body.event.type === 'message' &&
+        !body.event.subtype &&
+        !this.isDone(context)
+      ) {
+        await this.sendMenu(body.event.user, say);
+      }
+    });
   }
 
-  async startConversation(userId, say) {
+  setDone(context) {
+    context.done = true;
+  }
+
+  isDone(context) {
+    return context.done == true;
+  }
+
+  async sendMenu(userId, say) {
     await this.validateUser(say, userId);
-    const blocks = await this.getNavigationBlocks();
+    const navigationBlocks = await this.getNavigationBlocks();
+    const blocks = [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: 'What can I help you with?',
+        },
+      },
+      ...navigationBlocks,
+    ];
     await say({
       text: {
         type: 'mrkdwn',
@@ -83,7 +133,7 @@ module.exports = class Conversation extends Ilios {
     await respond({ blocks, replace_original: true });
   }
 
-  async releaseProjectChooser(action, respond) {
+  async releaseProjectChooser(respond) {
     const blocks = await this.getReleaseProjectChooserBlocks();
     await respond({ blocks, replace_original: true });
   }
