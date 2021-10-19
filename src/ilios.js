@@ -49,9 +49,6 @@ module.exports = class Home {
     }
     return [
       {
-        type: 'divider',
-      },
-      {
         type: 'actions',
         elements,
       },
@@ -146,7 +143,7 @@ module.exports = class Home {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: 'What project would you like releases for?',
+          text: 'Ok. I just need to know what project this release is for?',
         },
         accessory: {
           action_id: `${this.interactionType}_choose_release_type`,
