@@ -188,20 +188,24 @@ module.exports = class Home {
   }
 
   async getReleaseTypeChooseBlocksFor(project, name) {
+    let branch = 'master';
+    if (project === 'test-release-workspace') {
+      branch = 'main';
+    }
     const options = [
       {
         text: {
           type: 'plain_text',
           text: 'Minor',
         },
-        value: `${project}x::xminor`,
+        value: `${project}x::xminorx::x${branch}`,
       },
       {
         text: {
           type: 'plain_text',
           text: 'Patch',
         },
-        value: `${project}x::xpatch`,
+        value: `${project}x::xpatchx::x${branch}`,
       },
     ];
     //We don't do major releases of the API
@@ -211,7 +215,7 @@ module.exports = class Home {
           type: 'plain_text',
           text: 'Major',
         },
-        value: `${project}x::xmajor`,
+        value: `${project}x::xmajorx::x${branch}`,
       });
     }
     return [
@@ -235,14 +239,14 @@ module.exports = class Home {
   }
 
   getDetailsFromReleaseMessage(str) {
-    const [project, type] = str.split('x::x');
+    const [project, type, branch] = str.split('x::x');
     const [owner, repo] = project.split('/');
 
-    return { project, type, owner, repo };
+    return { project, type, owner, branch, repo };
   }
 
-  async doReleaseProjectFor(owner, repo, type) {
-    await runTagWorkflow(owner, repo, type);
+  async doReleaseProjectFor(owner, repo, branch, type) {
+    await runTagWorkflow(owner, repo, branch, type);
 
     return [
       {
