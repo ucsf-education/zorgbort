@@ -203,13 +203,13 @@ module.exports = class Home extends Ilios {
 
   async releaseProject(body, client) {
     const { value } = body.actions[0]['selected_option'];
-    const { project, type, owner, repo } = this.getDetailsFromReleaseMessage(value);
+    const { project, type, owner, branch, repo } = this.getDetailsFromReleaseMessage(value);
     const progress = await this.showProgressSpinner(
       body,
       client,
       `building ${type} release for ${project}`
     );
-    const ourBlocks = await this.doReleaseProjectFor(owner, repo, type);
+    const ourBlocks = await this.doReleaseProjectFor(owner, repo, branch, type);
     const navigationBlocks = await this.getNavigationBlocks();
     const blocks = [...navigationBlocks, ...ourBlocks];
 
