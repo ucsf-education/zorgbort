@@ -189,7 +189,7 @@ module.exports = class Home {
 
   async getReleaseTypeChooseBlocksFor(project, name) {
     let branch = 'master';
-    if (project === 'test-release-workspace') {
+    if (project === 'jrjohnson/test-release-workspace') {
       branch = 'main';
     }
     const options = [
@@ -209,7 +209,7 @@ module.exports = class Home {
       },
     ];
     //We don't do major releases of the API
-    if (project !== 'ilios') {
+    if (project !== 'ilios/ilios') {
       options.unshift({
         text: {
           type: 'plain_text',
