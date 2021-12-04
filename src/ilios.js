@@ -91,6 +91,13 @@ module.exports = class Home {
             {
               text: {
                 type: 'plain_text',
+                text: 'API',
+              },
+              value: 'ilios',
+            },
+            {
+              text: {
+                type: 'plain_text',
                 text: 'Simple Charts',
               },
               value: 'ember-simple-charts',
@@ -177,6 +184,13 @@ module.exports = class Home {
             {
               text: {
                 type: 'plain_text',
+                text: 'Ilios API',
+              },
+              value: 'ilios/ilios',
+            },
+            {
+              text: {
+                type: 'plain_text',
                 text: 'Ember Simple Charts',
               },
               value: 'ilios/ember-simple-charts',
@@ -196,14 +210,14 @@ module.exports = class Home {
       {
         text: {
           type: 'plain_text',
-          text: 'Minor',
+          text: 'Bugfix/Minor',
         },
         value: `${project}x::xminorx::x${branch}`,
       },
       {
         text: {
           type: 'plain_text',
-          text: 'Patch',
+          text: 'Feature/Patch',
         },
         value: `${project}x::xpatchx::x${branch}`,
       },
@@ -213,7 +227,7 @@ module.exports = class Home {
       options.unshift({
         text: {
           type: 'plain_text',
-          text: 'Major',
+          text: 'Breaking/API Bump/Major',
         },
         value: `${project}x::xmajorx::x${branch}`,
       });
