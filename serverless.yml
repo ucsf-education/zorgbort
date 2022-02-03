@@ -1,5 +1,5 @@
 service: zorgbort
-frameworkVersion: '2'
+frameworkVersion: '3'
 useDotenv: true
 provider:
   region: us-west-2
