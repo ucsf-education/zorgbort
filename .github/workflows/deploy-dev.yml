@@ -1,9 +1,12 @@
 name: Deploy Dev Build
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
+
+concurrency: deploy-dev
 
 jobs:
   deploy:

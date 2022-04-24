@@ -5,6 +5,8 @@ on:
     tags:
       - '*'
 
+concurrency: deploy-prod
+
 jobs:
   deploy:
     name: Deploy Lambda Function
