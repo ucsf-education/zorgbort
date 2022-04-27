@@ -210,16 +210,16 @@ module.exports = class Home {
       {
         text: {
           type: 'plain_text',
-          text: 'Bugfix/Minor',
+          text: 'Bugfix/Patch',
         },
-        value: `${project}x::xminorx::x${branch}`,
+        value: `${project}x::xpatchx::x${branch}`,
       },
       {
         text: {
           type: 'plain_text',
-          text: 'Feature/Patch',
+          text: 'Feature/Minor',
         },
-        value: `${project}x::xpatchx::x${branch}`,
+        value: `${project}x::xminorx::x${branch}`,
       },
     ];
     //We don't do major releases of the API
