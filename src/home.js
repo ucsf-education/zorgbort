@@ -45,6 +45,16 @@ module.exports = class Home extends Ilios {
       await this.validateUser(client, body.user.id);
       this.releaseProject(body, client);
     });
+    app.action(`${this.interactionType}_confirm_release`, async ({ body, ack, client }) => {
+      await ack();
+      await this.validateUser(client, body.user.id);
+      this.confirmRelease(body, client);
+    });
+    app.action(`${this.interactionType}_cancel`, async ({ body, ack, client }) => {
+      await ack();
+      await this.validateUser(client, body.user.id);
+      this.cancelRelease(body, client);
+    });
   }
 
   async validateUser(client, userId) {
@@ -201,8 +211,54 @@ module.exports = class Home extends Ilios {
     });
   }
 
-  async releaseProject(body, client) {
+  async confirmRelease(body, client) {
     const { value } = body.actions[0]['selected_option'];
+    const { project, type, branch } = this.getDetailsFromReleaseMessage(value);
+    const ourBlocks = await this.getReleaseConfirmationBlocksFor(project, branch, type);
+    const navigationBlocks = await this.getNavigationBlocks();
+    const blocks = [...navigationBlocks, ...ourBlocks];
+
+    await client.views.update({
+      view_id: body.view.id,
+      hash: body.view.hash,
+      view: {
+        type: 'home',
+        // View identifier
+        callback_id: 'home_view',
+        title: {
+          type: 'plain_text',
+          text: 'Confirm Release',
+        },
+        blocks,
+      },
+    });
+  }
+
+  async cancelRelease(body, client) {
+    const { value } = body.actions[0];
+    const { project, type } = this.getDetailsFromReleaseMessage(value);
+    const ourBlocks = await this.getCancelBlock(project, type);
+    const navigationBlocks = await this.getNavigationBlocks();
+    const blocks = [...navigationBlocks, ...ourBlocks];
+
+    await client.views.update({
+      view_id: body.view.id,
+      hash: body.view.hash,
+      view: {
+        type: 'home',
+        // View identifier
+        callback_id: 'home_view',
+        title: {
+          type: 'plain_text',
+          text: 'Cancel',
+        },
+        blocks,
+      },
+    });
+  }
+
+  async releaseProject(body, client) {
+    const { value } = body.actions[0];
     const { project, type, owner, branch, repo } = this.getDetailsFromReleaseMessage(value);
     const progress = await this.showProgressSpinner(
       body,

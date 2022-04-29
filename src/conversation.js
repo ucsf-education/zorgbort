@@ -62,6 +62,19 @@ module.exports = class Conversation extends Ilios {
       }
     );
     app.action(
+      `${this.interactionType}_confirm_release`,
+      async ({ action, ack, body, respond }) => {
+        await ack();
+        await this.validateUser(respond, body.user.id);
+        await this.confirmRelease(action, respond);
+      }
+    );
+    app.action(`${this.interactionType}_cancel`, async ({ action, ack, body, respond }) => {
+      await ack();
+      await this.validateUser(respond, body.user.id);
+      await this.cancel(action, respond);
+    });
+    app.action(
       `${this.interactionType}_release_project`,
       async ({ action, ack, body, respond }) => {
         await ack();
@@ -145,8 +158,20 @@ module.exports = class Conversation extends Ilios {
     await respond({ blocks, replace_original: true });
   }
 
-  async releaseProject(action, respond) {
+  async confirmRelease(action, respond) {
     const { value } = action.selected_option;
+    const { project, type, branch } = this.getDetailsFromReleaseMessage(value);
+    const blocks = await this.getReleaseConfirmationBlocksFor(project, branch, type);
+    await respond({ blocks, replace_original: true });
+  }
+
+  async cancel({ value }, respond) {
+    const { project, type } = this.getDetailsFromReleaseMessage(value);
+    const blocks = await this.getCancelBlock(project, type);
+    await respond({ blocks, replace_original: true });
+  }
+
+  async releaseProject({ value }, respond) {
     const { project, type, owner, branch, repo } = this.getDetailsFromReleaseMessage(value);
     await this.showProgressSpinner(respond, `building ${type} release for ${project}`);
     const blocks = await this.doReleaseProjectFor(owner, repo, branch, type);
