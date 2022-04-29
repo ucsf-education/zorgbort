@@ -210,16 +210,16 @@ module.exports = class Home {
       {
         text: {
           type: 'plain_text',
-          text: 'Bugfix/Patch',
+          text: 'Feature/Minor',
         },
-        value: `${project}x::xpatchx::x${branch}`,
+        value: `${project}x::xminorx::x${branch}`,
       },
       {
         text: {
           type: 'plain_text',
-          text: 'Feature/Minor',
+          text: 'Bugfix/Patch',
         },
-        value: `${project}x::xminorx::x${branch}`,
+        value: `${project}x::xpatchx::x${branch}`,
       },
     ];
     //We don't do major releases of the API
@@ -240,7 +240,7 @@ module.exports = class Home {
           text: `What type of release for ${name}`,
         },
         accessory: {
-          action_id: `${this.interactionType}_release_project`,
+          action_id: `${this.interactionType}_confirm_release`,
           type: 'static_select',
           placeholder: {
             type: 'plain_text',
@@ -257,6 +257,56 @@ module.exports = class Home {
     const [owner, repo] = project.split('/');
 
     return { project, type, owner, branch, repo };
+  }
+
+  async getReleaseConfirmationBlocksFor(project, branch, type) {
+    return [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `Are you ready to release a ${type} version of ${project}?`,
+        },
+      },
+      {
+        type: 'actions',
+        elements: [
+          {
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: 'Make it so',
+            },
+            value: `${project}x::x${type}x::x${branch}`,
+            action_id: `${this.interactionType}_release_project`,
+            style: 'primary',
+          },
+          {
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: 'Halt and Abort',
+              emoji: true,
+            },
+            value: `${project}x::x${type}x::x${branch}`,
+            action_id: `${this.interactionType}_cancel`,
+            style: 'danger',
+          },
+        ],
+      },
+    ];
+  }
+
+  async getCancelBlock(project, type) {
+    return [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `Release of ${type} version for ${project} canceled.`,
+        },
+      },
+    ];
   }
 
   async doReleaseProjectFor(owner, repo, branch, type) {
