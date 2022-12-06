@@ -102,6 +102,20 @@ module.exports = class Home {
               },
               value: 'ember-simple-charts',
             },
+            {
+              text: {
+                type: 'plain_text',
+                text: 'LTI Dashboard',
+              },
+              value: 'lti-dashboard',
+            },
+            {
+              text: {
+                type: 'plain_text',
+                text: 'LTI Server',
+              },
+              value: 'lti-server',
+            },
           ],
         },
       },
@@ -187,6 +201,20 @@ module.exports = class Home {
                 text: 'Ilios API',
               },
               value: 'ilios/ilios',
+            },
+            {
+              text: {
+                type: 'plain_text',
+                text: 'LTI Dashboard',
+              },
+              value: 'ilios/lti-dashboard',
+            },
+            {
+              text: {
+                type: 'plain_text',
+                text: 'LTI Server',
+              },
+              value: 'ilios/lti-server',
             },
             {
               text: {
