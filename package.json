@@ -30,7 +30,7 @@
     "@slack/bolt": "^3.12.2"
   },
   "devDependencies": {
-    "eslint": "^8.14.0",
+    "eslint": "^8.37.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
