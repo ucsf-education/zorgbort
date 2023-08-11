@@ -43,7 +43,7 @@ module.exports = class Conversation extends Ilios {
         await ack();
         await this.validateUser(respond, body.user.id);
         await this.listReleasesFor(action, respond);
-      }
+      },
     );
     app.action(
       `${this.interactionType}_release_project_chooser`,
@@ -51,7 +51,7 @@ module.exports = class Conversation extends Ilios {
         await ack();
         await this.validateUser(respond, body.user.id);
         await this.releaseProjectChooser(respond);
-      }
+      },
     );
     app.action(
       `${this.interactionType}_choose_release_type`,
@@ -59,7 +59,7 @@ module.exports = class Conversation extends Ilios {
         await ack();
         await this.validateUser(respond, body.user.id);
         await this.releaseTypeChooser(action, respond);
-      }
+      },
     );
     app.action(
       `${this.interactionType}_confirm_release`,
@@ -67,7 +67,7 @@ module.exports = class Conversation extends Ilios {
         await ack();
         await this.validateUser(respond, body.user.id);
         await this.confirmRelease(action, respond);
-      }
+      },
     );
     app.action(`${this.interactionType}_cancel`, async ({ action, ack, body, respond }) => {
       await ack();
@@ -80,7 +80,7 @@ module.exports = class Conversation extends Ilios {
         await ack();
         await this.validateUser(respond, body.user.id);
         await this.releaseProject(action, respond);
-      }
+      },
     );
     app.use(async ({ body, next, say, context }) => {
       await next();
