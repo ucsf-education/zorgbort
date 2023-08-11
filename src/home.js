@@ -263,7 +263,7 @@ module.exports = class Home extends Ilios {
     const progress = await this.showProgressSpinner(
       body,
       client,
-      `building ${type} release for ${project}`
+      `building ${type} release for ${project}`,
     );
     const ourBlocks = await this.doReleaseProjectFor(owner, repo, branch, type);
     const navigationBlocks = await this.getNavigationBlocks();
