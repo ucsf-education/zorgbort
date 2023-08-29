@@ -1,6 +1,6 @@
 {
   "name": "zorgbort",
-  "version": "8.0.0",
+  "version": "9.0.0",
   "description": "Zorgbort does Iliosy things well",
   "main": "app.js",
   "directories": {
