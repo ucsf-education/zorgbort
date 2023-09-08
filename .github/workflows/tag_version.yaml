@@ -12,7 +12,7 @@ jobs:
     outputs:
       should_run: ${{ steps.should_run.outputs.should_run }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: print latest_commit
         run: echo ${{ github.sha }}
       - id: should_run
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.has_changes.outputs.should_run != 'no' }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
           token: ${{ secrets.ZORGBORT_TOKEN }}
     - name: Setup Git
