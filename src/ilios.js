@@ -128,7 +128,7 @@ module.exports = class Home {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `Woking on ${what}....`,
+          text: `Working on ${what}....`,
         },
         accessory: {
           type: 'image',
