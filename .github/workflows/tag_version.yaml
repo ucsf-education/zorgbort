@@ -10,19 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     name: Check For Changes
     outputs:
-      should_run: ${{ steps.should_run.outputs.should_run }}
+      shouldRun: ${{ steps.should_run.outputs.shouldRun }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: print latest_commit
         run: echo ${{ github.sha }}
       - id: should_run
         if: ${{ github.event_name == 'schedule' }}
         name: check that there have been commits since the last tag
-        run: test -z $(git rev-list $(git describe --tags --abbrev=0)..${{ github.sha }}) && echo "::set-output name=should_run::no"
+        run: test -z $(git rev-list $(git describe --tags --abbrev=0)..${{ github.sha }}) && echo "shouldRun=no" >> "$GITHUB_OUTPUT"
   tag:
     needs: has_changes
     runs-on: ubuntu-latest
-    if: ${{ needs.has_changes.outputs.should_run != 'no' }}
+    if: needs.has_changes.outputs.shouldRun != 'no'
     steps:
     - uses: actions/checkout@v4
       with:
