@@ -1,10 +1,9 @@
 service: zorgbort
 frameworkVersion: '3'
-useDotenv: true
 provider:
   region: us-west-2
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs20.x
   environment:
     SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
     SLACK_BOT_TOKEN: ${env:SLACK_BOT_TOKEN}

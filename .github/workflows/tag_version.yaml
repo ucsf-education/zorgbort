@@ -34,6 +34,28 @@ jobs:
         git config --global user.name "Zorgbort"
         git config --global user.email "info@iliosproject.org"
     - name: Increment Version
-      run: npm version major
+      run: npx versionup --level major
+    - run: |
+        NEW_TAG=`node -p "require('./package.json').version"`
+        echo ${NEW_TAG}
+        echo "new_tag=${NEW_TAG}" >> $GITHUB_ENV
+    - name: Tag Version
+      run: |
+        git commit -a -m "${{env.new_tag}}"
+        git tag v${{env.new_tag}} -m "Tagging the v${{env.new_tag}} release"
     - name: Push Changes
       run: git push --follow-tags
+    - uses: act10ns/slack@v2
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ILIOS_DEPLOYMENT_WEBHOOK_URL }}
+      with:
+        status: ${{ job.status }}
+        message: Tagged Zorgbort v${{env.new_tag}} {{ env.GITHUB_SERVER_URL }}/{{ env.GITHUB_REPOSITORY }}/actions/runs/{{ env.GITHUB_RUN_ID }}
+    - uses: act10ns/slack@v2
+      if: failure()
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ILIOS_DEPLOYMENT_WEBHOOK_URL }}
+      with:
+        status: ${{ job.status }}
+        message: Zorgbort Version Tagging Failed {{ env.GITHUB_SERVER_URL }}/{{ env.GITHUB_REPOSITORY }}/actions/runs/{{ env.GITHUB_RUN_ID }}
+
