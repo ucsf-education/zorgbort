@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/ucsf-ckm/zorgbort#README.md",
   "dependencies": {
-    "@octokit/rest": "^21.0.1",
+    "@octokit/rest": "^20.1.0",
     "@slack/bolt": "^3.19.0"
   },
   "devDependencies": {
