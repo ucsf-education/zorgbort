@@ -23,5 +23,5 @@ jobs:
           cache: pnpm
       - name: Install Dependencies
         run: pnpm install
-      - name: test
-        run: npm run test
+      - run: pnpm run lint
+      - run: pnpm run test
