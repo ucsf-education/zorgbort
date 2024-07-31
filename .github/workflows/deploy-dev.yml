@@ -12,20 +12,37 @@ jobs:
   deploy:
     name: Deploy Lambda Function
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SLACK_SIGNING_SECRET: ${{ secrets.ZORGBORT_STAGE_SLACK_SIGNING_SECRET }}
+      SLACK_BOT_TOKEN: ${{ secrets.ZORGBORT_STAGE_SLACK_BOT_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.ZORGBORT_TOKEN }}
+      VALID_RELEASE_USERS: ${{ secrets.ZORGBORT_STAGE_VALID_RELEASE_USERS }}
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js
-      uses: actions/setup-node@v4
+    - uses: pnpm/action-setup@v4
       with:
-        node-version: 18
-    - name: install dependencies
-      run: npm ci
-    - name: Serverless Deploy
-      run: npm run deploy:dev
+        version: 9
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - name: install dependencies hoisted for lambda
+      run: pnpm install --node-linker=hoisted
+    - run: pnpm exec serverless package --stage dev
+    - uses: actions/upload-artifact@v4
+      with:
+        name: dev-zorgbort.zip
+        path: ./.serverless/zorgbort.zip
+        if-no-files-found: error
+        retention-days: 3
+        compression-level: 0
+    - run: pnpm exec serverless deploy --stage dev --package ./.serverless --conceal --verbose
+    - uses: act10ns/slack@v2
+      if: failure()
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        SLACK_SIGNING_SECRET: ${{ secrets.ZORGBORT_STAGE_SLACK_SIGNING_SECRET }}
-        SLACK_BOT_TOKEN: ${{ secrets.ZORGBORT_STAGE_SLACK_BOT_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.ZORGBORT_TOKEN }}
-        VALID_RELEASE_USERS: ${{ secrets.ZORGBORT_STAGE_VALID_RELEASE_USERS }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ILIOS_DEPLOYMENT_WEBHOOK_URL }}
+      with:
+        status: ${{ job.status }}
+        message: Zorgbort deploy failed {{ env.GITHUB_SERVER_URL }}/{{ env.GITHUB_REPOSITORY }}/actions/runs/{{ env.GITHUB_RUN_ID }}
+
