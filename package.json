@@ -3,6 +3,7 @@
   "version": "11.0.0",
   "description": "Zorgbort does Iliosy things well",
   "main": "app.js",
+  "private": true,
   "directories": {
     "lib": "lib",
     "test": "test"
@@ -32,6 +33,7 @@
   "devDependencies": {
     "eslint": "^9.4.0",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-mocha": "^10.5.0",
     "eslint-plugin-n": "^17.10.0",
     "eslint-plugin-prettier": "^5.2.1",
     "mocha": "^10.7.0",
