@@ -9,7 +9,7 @@ You'll need a publicly-accessible address to configure Slack OAuth. You can crea
 You'll need to configure a Slack app to test with at [https://api.slack.com/apps](https://api.slack.com/apps). This will give you the details to fill in for your `.env` file.
 
 1. `git clone zorgbort`
-2. `npm install`
+2. `pnpm install`
 3. add a `.env` file with:
 ```bash
 SLACK_SIGNING_SECRET="SECRET"
@@ -18,7 +18,7 @@ GITHUB_TOKEN="TOKEN"
 VALID_RELEASE_USERS="SLACKID,SLACKID2"
 PORT=3000
 ```
-4. Run ZORGBORT with `npm start`
+4. Run ZORGBORT with `pnpm start`
 
 ## Acknowledgments
 
