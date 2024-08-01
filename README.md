@@ -6,11 +6,11 @@ Zorgbort is going to make common tasks easier to do.
 
 You'll need a publicly-accessible address to configure Slack OAuth. You can create a tunnel with [https://ngrok.com](https://ngrok.com) and run `ngrok http 3000` to connect.
 
-You'll need to configure a Slack app to test with at [https://api.slack.com/apps](https://api.slack.com/apps). This will give you the details to fill in for your `.env` file.
+You'll need to configure a Slack app to test with at [https://api.slack.com/apps](https://api.slack.com/apps). This will give you the details you need to authenticate the app.
 
 1. `git clone zorgbort`
 2. `pnpm install`
-3. add a `.env` file with:
+3. add these variables to your environment:
 ```bash
 SLACK_SIGNING_SECRET="SECRET"
 SLACK_BOT_TOKEN="TOKEN"
