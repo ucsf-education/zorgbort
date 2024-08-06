@@ -20,7 +20,7 @@ jobs:
       - id: should_run
         if: ${{ github.event_name == 'schedule' }}
         name: check that there have been commits since the last tag
-        run: test -z $(git rev-list $(git describe --tags --abbrev=0)..${{ github.sha }}) && echo "shouldRun=no" >> "$GITHUB_OUTPUT"
+        run: test -z $(git rev-list $(git describe --tags --abbrev=0)..${{ github.sha }} --max-count=1) && echo "shouldRun=no" >> "$GITHUB_OUTPUT"
   tag:
     needs: has_changes
     runs-on: ubuntu-latest
