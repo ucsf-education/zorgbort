@@ -40,11 +40,11 @@ importers:
         specifier: ^3.3.1
         version: 3.3.3
       serverless:
-        specifier: ^4.1.20
-        version: 4.1.21
+        specifier: ^4.1.22
+        version: 4.1.22
       serverless-offline:
         specifier: ^14.0.0
-        version: 14.0.0(serverless@4.1.21)
+        version: 14.0.0(serverless@4.1.22)
 
 packages:
 
@@ -2038,6 +2038,9 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
+  sax@1.4.1:
+    resolution: {integrity: sha512-+aWOz7yVScEGoKNd4PA10LZ8sk0A/z5+nXQG5giUO5rprX9jgYsTdov9qCchZiPIZezbZH+jRut8nPodFAX4Jg==}
+
   semver-compare@1.0.0:
     resolution: {integrity: sha512-YM3/ITh2MJ5MtzaM429anh+x2jiLVjqILF4m4oyQB18W7Ggea7BfqdH/wGMK7dDiMghv/6WG7znWMwUDzJiXow==}
 
@@ -2063,8 +2066,8 @@ packages:
     peerDependencies:
       serverless: ^4.0.0
 
-  serverless@4.1.21:
-    resolution: {integrity: sha512-orKIKaAvRf1BlCeF4/wLnF87cIIwa50ytGPXva12Znc8CEuny3sqg4f8cvejtkvny7pXHshiL8AV02au0BSfZw==}
+  serverless@4.1.22:
+    resolution: {integrity: sha512-MNEZqktEIib/JB+JRc504EaijEr1CgG5jlbUfUV7u2BXpneJinhTgVQH56TVZLSPWEEMIIdA9Eu0Wdi3jUfpbw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -2348,6 +2351,14 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+
+  xml2js@0.6.2:
+    resolution: {integrity: sha512-T4rieHaC1EXcES0Kxxj4JWgaUQHDk+qwHcYOCFHfiwKz7tOVPLq7Hjq9dM1WCMhylqMEfP7hMcOIChvotiZegA==}
+    engines: {node: '>=4.0.0'}
+
+  xmlbuilder@11.0.1:
+    resolution: {integrity: sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==}
+    engines: {node: '>=4.0'}
 
   y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
@@ -4936,6 +4947,8 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
+  sax@1.4.1: {}
+
   semver-compare@1.0.0: {}
 
   semver@7.6.3: {}
@@ -4971,7 +4984,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  serverless-offline@14.0.0(serverless@4.1.21):
+  serverless-offline@14.0.0(serverless@4.1.22):
     dependencies:
       '@aws-sdk/client-lambda': 3.629.0
       '@hapi/boom': 10.0.1
@@ -4993,7 +5006,7 @@ snapshots:
       luxon: 3.5.0
       node-schedule: 2.1.1
       p-memoize: 7.1.1
-      serverless: 4.1.21
+      serverless: 4.1.22
       tree-kill: 1.2.2
       tsx: 4.17.0
       velocityjs: 2.0.6
@@ -5004,11 +5017,12 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  serverless@4.1.21:
+  serverless@4.1.22:
     dependencies:
       axios: 1.7.3
       axios-proxy-builder: 0.1.2
       rimraf: 5.0.10
+      xml2js: 0.6.2
     transitivePeerDependencies:
       - debug
 
@@ -5284,6 +5298,13 @@ snapshots:
   ws@7.5.10: {}
 
   ws@8.18.0: {}
+
+  xml2js@0.6.2:
+    dependencies:
+      sax: 1.4.1
+      xmlbuilder: 11.0.1
+
+  xmlbuilder@11.0.1: {}
 
   y18n@5.0.8: {}
 
