@@ -40,7 +40,7 @@
     "pre-commit": "^1.2.2",
     "prettier": "^3.3.1",
     "serverless": "^4.2.3",
-    "serverless-offline": "^14.0.0"
+    "serverless-offline": "^14.2.0"
   },
   "engines": {
     "node": ">= 20"
