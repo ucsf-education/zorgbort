@@ -12,8 +12,8 @@ importers:
         specifier: ^20.1.0
         version: 20.1.1
       '@slack/bolt':
-        specifier: ^3.21.1
-        version: 3.21.1
+        specifier: ^3.21.2
+        version: 3.21.2
     devDependencies:
       eslint:
         specifier: ^9.4.0
@@ -530,8 +530,8 @@ packages:
     resolution: {integrity: sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@slack/bolt@3.21.1':
-    resolution: {integrity: sha512-cql+f8DypIE96mgFTREslP1DfsTUMyVR76whdepcQ1BpP2vXO1TZJxwJHnDKcnJ+NTg8KNGfPIjDfHZUMETCKw==}
+  '@slack/bolt@3.21.2':
+    resolution: {integrity: sha512-Cft+5dbl+YApK2GVFX9O86k0qIqQXshnBGq9oK4a4rLfklyfw9TcydmOxEd32aR/2HbBwr7o/pwu5UAI2c/bUg==}
     engines: {node: '>=12.13.0', npm: '>=6.12.0'}
 
   '@slack/logger@3.0.0':
@@ -1936,9 +1936,6 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  please-upgrade-node@3.2.0:
-    resolution: {integrity: sha512-gQR3WpIgNIKwBMVLkpMUeR3e1/E1y42bqDQZfql+kDeXd8COYfM8PQA4X6y7a8u9Ua9FHmsrrmirW2vHs45hWg==}
-
   possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}
     engines: {node: '>= 0.4'}
@@ -2057,9 +2054,6 @@ packages:
 
   sax@1.4.1:
     resolution: {integrity: sha512-+aWOz7yVScEGoKNd4PA10LZ8sk0A/z5+nXQG5giUO5rprX9jgYsTdov9qCchZiPIZezbZH+jRut8nPodFAX4Jg==}
-
-  semver-compare@1.0.0:
-    resolution: {integrity: sha512-YM3/ITh2MJ5MtzaM429anh+x2jiLVjqILF4m4oyQB18W7Ggea7BfqdH/wGMK7dDiMghv/6WG7znWMwUDzJiXow==}
 
   semver@7.6.3:
     resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
@@ -3172,7 +3166,7 @@ snapshots:
 
   '@pkgr/core@0.1.1': {}
 
-  '@slack/bolt@3.21.1':
+  '@slack/bolt@3.21.2':
     dependencies:
       '@slack/logger': 4.0.0
       '@slack/oauth': 2.6.3
@@ -3185,7 +3179,6 @@ snapshots:
       axios: 1.7.7
       express: 4.19.2
       path-to-regexp: 6.2.2
-      please-upgrade-node: 3.2.0
       promise.allsettled: 1.0.7
       raw-body: 2.5.2
       tsscmp: 1.0.6
@@ -4860,10 +4853,6 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  please-upgrade-node@3.2.0:
-    dependencies:
-      semver-compare: 1.0.0
-
   possible-typed-array-names@1.0.0: {}
 
   pre-commit@1.2.2:
@@ -4982,8 +4971,6 @@ snapshots:
   safer-buffer@2.1.2: {}
 
   sax@1.4.1: {}
-
-  semver-compare@1.0.0: {}
 
   semver@7.6.3: {}
 
