@@ -12,8 +12,8 @@ importers:
         specifier: ^20.1.0
         version: 20.1.1
       '@slack/bolt':
-        specifier: ^3.21.2
-        version: 3.21.2
+        specifier: ^3.21.4
+        version: 3.21.4
     devDependencies:
       eslint:
         specifier: ^9.4.0
@@ -534,9 +534,9 @@ packages:
     resolution: {integrity: sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@slack/bolt@3.21.2':
-    resolution: {integrity: sha512-Cft+5dbl+YApK2GVFX9O86k0qIqQXshnBGq9oK4a4rLfklyfw9TcydmOxEd32aR/2HbBwr7o/pwu5UAI2c/bUg==}
-    engines: {node: '>=12.13.0', npm: '>=6.12.0'}
+  '@slack/bolt@3.21.4':
+    resolution: {integrity: sha512-4PqOuHXcVt8KxjKiLdLIqZp8285zdiYLj7HrrKvVHnUNbkD0l16HZxtMfIEe07REQ+vmM1mrqCiZqe9dPAMucA==}
+    engines: {node: '>=14.21.3', npm: '>=6.14.18'}
 
   '@slack/logger@3.0.0':
     resolution: {integrity: sha512-DTuBFbqu4gGfajREEMrkq5jBhcnskinhr4+AnfJEk48zhVeEv3XnUKGIX98B74kxhYsIMfApGGySTn7V3b5yBA==}
@@ -1934,8 +1934,9 @@ packages:
   path-to-regexp@0.1.10:
     resolution: {integrity: sha512-7lf7qcQidTku0Gu3YDPc8DJ1q7OOucfa/BSsIwjuh56VU7katFvuM8hULfkwB3Fns/rsVF7PwPKVw1sl5KQS9w==}
 
-  path-to-regexp@6.2.2:
-    resolution: {integrity: sha512-GQX3SSMokngb36+whdpRXE+3f9V8UzyAorlYvOGx87ufGHehNTn5lCxrKtLyZ4Yl/wEKnNnr98ZzOwwDZV5ogw==}
+  path-to-regexp@8.1.0:
+    resolution: {integrity: sha512-Bqn3vc8CMHty6zuD+tG23s6v2kwxslHEhTj4eYaVKGIEB+YX/2wd0/rgXLFD9G9id9KCtbVy/3ZgmvZjpa0UdQ==}
+    engines: {node: '>=16'}
 
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
@@ -3183,7 +3184,7 @@ snapshots:
 
   '@pkgr/core@0.1.1': {}
 
-  '@slack/bolt@3.21.2':
+  '@slack/bolt@3.21.4':
     dependencies:
       '@slack/logger': 4.0.0
       '@slack/oauth': 2.6.3
@@ -3195,7 +3196,7 @@ snapshots:
       '@types/tsscmp': 1.0.2
       axios: 1.7.7
       express: 4.20.0
-      path-to-regexp: 6.2.2
+      path-to-regexp: 8.1.0
       promise.allsettled: 1.0.7
       raw-body: 2.5.2
       tsscmp: 1.0.6
@@ -4866,7 +4867,7 @@ snapshots:
 
   path-to-regexp@0.1.10: {}
 
-  path-to-regexp@6.2.2: {}
+  path-to-regexp@8.1.0: {}
 
   picomatch@2.3.1: {}
 
