@@ -84,13 +84,6 @@ module.exports = class Home {
             {
               text: {
                 type: 'plain_text',
-                text: 'Common',
-              },
-              value: 'common',
-            },
-            {
-              text: {
-                type: 'plain_text',
                 text: 'API',
               },
               value: 'ilios',
@@ -101,13 +94,6 @@ module.exports = class Home {
                 text: 'Simple Charts',
               },
               value: 'ember-simple-charts',
-            },
-            {
-              text: {
-                type: 'plain_text',
-                text: 'LTI Dashboard',
-              },
-              value: 'lti-dashboard',
             },
             {
               text: {
@@ -184,13 +170,6 @@ module.exports = class Home {
             {
               text: {
                 type: 'plain_text',
-                text: 'Ilios Common',
-              },
-              value: 'ilios/common',
-            },
-            {
-              text: {
-                type: 'plain_text',
                 text: 'Ilios Frontend',
               },
               value: 'ilios/frontend',
@@ -201,13 +180,6 @@ module.exports = class Home {
                 text: 'Ilios API',
               },
               value: 'ilios/ilios',
-            },
-            {
-              text: {
-                type: 'plain_text',
-                text: 'LTI Dashboard',
-              },
-              value: 'ilios/lti-dashboard',
             },
             {
               text: {
