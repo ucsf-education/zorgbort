@@ -43,8 +43,8 @@ importers:
         specifier: ^4.4.5
         version: 4.4.7
       serverless-offline:
-        specifier: ^14.3.3
-        version: 14.3.3(serverless@4.4.7)
+        specifier: ^14.3.4
+        version: 14.3.4(serverless@4.4.7)
 
 packages:
 
@@ -2069,8 +2069,8 @@ packages:
     resolution: {integrity: sha512-VqpjJZKadQB/PEbEwvFdO43Ax5dFBZ2UECszz8bQ7pi7wt//PWe1P6MN7eCnjsatYtBT6EuiClbjSWP2WrIoTw==}
     engines: {node: '>= 0.8.0'}
 
-  serverless-offline@14.3.3:
-    resolution: {integrity: sha512-q/m/5BclrBQiF9mqfvGl2xCz+hs5+MGwdTou6tq/Jud+bExdF3rofl/bKVu7ahlV7FIjOo0Xfa0LLI404oL61g==}
+  serverless-offline@14.3.4:
+    resolution: {integrity: sha512-PlLyllDHSHSVCv3vcRT5fFxSyjDBVHMLirzzfBK0NTG7JvL90mQvSedBGncHD2XcaPvjxo8ZW6OfEMEe9nQKuQ==}
     engines: {node: '>=18.12.0'}
     peerDependencies:
       serverless: ^4.0.0
@@ -5014,7 +5014,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  serverless-offline@14.3.3(serverless@4.4.7):
+  serverless-offline@14.3.4(serverless@4.4.7):
     dependencies:
       '@aws-sdk/client-lambda': 3.680.0
       '@hapi/boom': 10.0.1
