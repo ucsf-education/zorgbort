@@ -40,11 +40,11 @@ importers:
         specifier: ^3.4.2
         version: 3.4.2
       serverless:
-        specifier: ^4.4.19
-        version: 4.4.19
+        specifier: ^4.5.0
+        version: 4.5.0
       serverless-offline:
         specifier: ^14.3.4
-        version: 14.4.0(serverless@4.4.19)
+        version: 14.4.0(serverless@4.5.0)
 
 packages:
 
@@ -2120,8 +2120,8 @@ packages:
     peerDependencies:
       serverless: ^4.0.0
 
-  serverless@4.4.19:
-    resolution: {integrity: sha512-zUI35NGDgjeu2RLB81NFpG0nGg0AsfjVrS3AOJFsOnXN0ROsG7m6EZjzn5TZeAdrtCR0mukaim8JCWQCE1bNvQ==}
+  serverless@4.5.0:
+    resolution: {integrity: sha512-msbs5I/fuPiW0ZfBuFA7lpKazCTFtF0AhOCA0HsrJBGVaOrNbwzlC/krZKXn1YgDR2+cw/izKRNupZJXtpyxJQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -5120,7 +5120,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  serverless-offline@14.4.0(serverless@4.4.19):
+  serverless-offline@14.4.0(serverless@4.5.0):
     dependencies:
       '@aws-sdk/client-lambda': 3.731.1
       '@hapi/boom': 10.0.1
@@ -5144,7 +5144,7 @@ snapshots:
       node-fetch: 3.3.2
       node-schedule: 2.1.1
       p-memoize: 7.1.1
-      serverless: 4.4.19
+      serverless: 4.5.0
       tree-kill: 1.2.2
       tsx: 4.19.2
       velocityjs: 2.0.6
@@ -5155,7 +5155,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  serverless@4.4.19:
+  serverless@4.5.0:
     dependencies:
       axios: 1.7.9
       axios-proxy-builder: 0.1.2
