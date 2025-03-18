@@ -41,10 +41,10 @@ importers:
         version: 3.5.3
       serverless:
         specifier: ^4.6.2
-        version: 4.8.0
+        version: 4.9.0
       serverless-offline:
         specifier: ^14.3.4
-        version: 14.4.0(serverless@4.8.0)
+        version: 14.4.0(serverless@4.9.0)
 
 packages:
 
@@ -307,8 +307,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@eslint-community/eslint-utils@4.5.0':
-    resolution: {integrity: sha512-RoV8Xs9eNwiDvhv7M+xcL4PWyRyIXRY/FLp3buU4h1EYfdF7unWUy3dOjPqb3C7rMUewIcqwW850PgS8h1o1yg==}
+  '@eslint-community/eslint-utils@4.5.1':
+    resolution: {integrity: sha512-soEIOALTfTK6EjmKMMoLugwaP0rzkad90iIWd1hMO9ARkSAyjfMfkRRhLvD5qH7vvM0Cg72pieUfR6yh6XxC4w==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
@@ -893,8 +893,8 @@ packages:
   axios-proxy-builder@0.1.2:
     resolution: {integrity: sha512-6uBVsBZzkB3tCC8iyx59mCjQckhB8+GQrI9Cop8eC7ybIsvs/KtnNgEBfRMSEa7GqK2VBGUzgjNYMdPIfotyPA==}
 
-  axios@1.8.2:
-    resolution: {integrity: sha512-ls4GYBm5aig9vWx8AWDSGLpnpDQRtWAfrjU+EuytuODrFBkqesN2RkOQCBzrA1RQNHw1SmRMSDDDSwzNAYQ6Rg==}
+  axios@1.8.3:
+    resolution: {integrity: sha512-iP4DebzoNlP/YN2dpwCgb8zoCmhtkajzS48JvwmkSkXvPI3DHc7m+XYL5tGnSlJtR6nImXZmdCuN5aP8dh1d8A==}
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -2136,8 +2136,8 @@ packages:
     peerDependencies:
       serverless: ^4.0.0
 
-  serverless@4.8.0:
-    resolution: {integrity: sha512-ZNw/zqp9Jm5AItRvv+XCZH47fqwHloYlGnSNP0KJKmM2pRx+VGAbyj5j0BT/lFxR1kXFd5gzBah49MjoIdpRAw==}
+  serverless@4.9.0:
+    resolution: {integrity: sha512-tudC208GN8LGXhy4fodE8VxHibTEBoJorRTpoJGDIac4V0cRhhu2l9eKusBjGk9bDy06XjJQdpsNjcPoW5aH7A==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -2909,7 +2909,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.1':
     optional: true
 
-  '@eslint-community/eslint-utils@4.5.0(eslint@9.22.0)':
+  '@eslint-community/eslint-utils@4.5.1(eslint@9.22.0)':
     dependencies:
       eslint: 9.22.0
       eslint-visitor-keys: 3.4.3
@@ -3231,7 +3231,7 @@ snapshots:
       '@types/express': 4.17.21
       '@types/promise.allsettled': 1.0.6
       '@types/tsscmp': 1.0.2
-      axios: 1.8.2
+      axios: 1.8.3
       express: 4.21.2
       path-to-regexp: 8.2.0
       promise.allsettled: 1.0.7
@@ -3284,7 +3284,7 @@ snapshots:
       '@slack/types': 2.14.0
       '@types/is-stream': 1.1.0
       '@types/node': 22.13.10
-      axios: 1.8.2
+      axios: 1.8.3
       eventemitter3: 3.1.2
       form-data: 2.5.3
       is-electron: 2.2.2
@@ -3747,7 +3747,7 @@ snapshots:
     dependencies:
       tunnel: 0.0.6
 
-  axios@1.8.2:
+  axios@1.8.3:
     dependencies:
       follow-redirects: 1.15.9
       form-data: 4.0.2
@@ -4128,7 +4128,7 @@ snapshots:
 
   eslint-plugin-es-x@7.8.0(eslint@9.22.0):
     dependencies:
-      '@eslint-community/eslint-utils': 4.5.0(eslint@9.22.0)
+      '@eslint-community/eslint-utils': 4.5.1(eslint@9.22.0)
       '@eslint-community/regexpp': 4.12.1
       eslint: 9.22.0
       eslint-compat-utils: 0.5.1(eslint@9.22.0)
@@ -4142,7 +4142,7 @@ snapshots:
 
   eslint-plugin-n@17.16.2(eslint@9.22.0):
     dependencies:
-      '@eslint-community/eslint-utils': 4.5.0(eslint@9.22.0)
+      '@eslint-community/eslint-utils': 4.5.1(eslint@9.22.0)
       enhanced-resolve: 5.18.1
       eslint: 9.22.0
       eslint-plugin-es-x: 7.8.0(eslint@9.22.0)
@@ -4179,7 +4179,7 @@ snapshots:
 
   eslint@9.22.0:
     dependencies:
-      '@eslint-community/eslint-utils': 4.5.0(eslint@9.22.0)
+      '@eslint-community/eslint-utils': 4.5.1(eslint@9.22.0)
       '@eslint-community/regexpp': 4.12.1
       '@eslint/config-array': 0.19.2
       '@eslint/config-helpers': 0.1.0
@@ -5148,7 +5148,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  serverless-offline@14.4.0(serverless@4.8.0):
+  serverless-offline@14.4.0(serverless@4.9.0):
     dependencies:
       '@aws-sdk/client-lambda': 3.758.0
       '@hapi/boom': 10.0.1
@@ -5172,7 +5172,7 @@ snapshots:
       node-fetch: 3.3.2
       node-schedule: 2.1.1
       p-memoize: 7.1.1
-      serverless: 4.8.0
+      serverless: 4.9.0
       tree-kill: 1.2.2
       tsx: 4.19.3
       velocityjs: 2.0.6
@@ -5183,9 +5183,9 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  serverless@4.8.0:
+  serverless@4.9.0:
     dependencies:
-      axios: 1.8.2
+      axios: 1.8.3
       axios-proxy-builder: 0.1.2
       rimraf: 5.0.10
       xml2js: 0.6.2
