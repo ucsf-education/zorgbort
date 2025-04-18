@@ -1,0 +1,5 @@
+# Set the default behavior
+* text=auto
+
+#enforce unix line-endings for EVERYTHING
+*.json text eol=lf
