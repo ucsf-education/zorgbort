@@ -12,7 +12,7 @@ jobs:
     outputs:
       shouldRun: ${{ steps.should_run.outputs.shouldRun }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: print latest_commit
@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     if: needs.has_changes.outputs.shouldRun != 'no'
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
           token: ${{ secrets.ZORGBORT_TOKEN }}
     - name: Setup Git

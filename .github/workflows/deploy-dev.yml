@@ -21,7 +21,7 @@ jobs:
       VALID_RELEASE_USERS: ${{ secrets.ZORGBORT_STAGE_VALID_RELEASE_USERS }}
       SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: pnpm/action-setup@v4
       with:
         version: 9
