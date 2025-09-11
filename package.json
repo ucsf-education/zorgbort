@@ -43,7 +43,7 @@
     "serverless-offline": "^14.3.4"
   },
   "engines": {
-    "node": ">= 20"
+    "node": ">= 22"
   },
   "pre-commit": [
     "lint"
