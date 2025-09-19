@@ -173,7 +173,7 @@ module.exports = class Conversation extends Ilios {
 
   async releaseProject({ value }, respond) {
     const { project, type, owner, branch, repo } = this.getDetailsFromReleaseMessage(value);
-    await this.showProgressSpinner(respond, `building ${type} release for ${project}`);
+    await this.showProgressSpinner(respond, `building *_${type}_* release for \`${project}\``);
     const blocks = await this.doReleaseProjectFor(owner, repo, branch, type);
     await respond({ blocks, replace_original: true });
   }

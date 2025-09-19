@@ -150,7 +150,7 @@ module.exports = class Home {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: 'Ok. I just need to know what project this release is for?',
+          text: 'Ok. Which project do you want to release?',
         },
         accessory: {
           action_id: `${this.interactionType}_choose_release_type`,
@@ -237,7 +237,7 @@ module.exports = class Home {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `What type of release for ${name}`,
+          text: `What *_type_* of release do you want to do for *${name}*?`,
         },
         accessory: {
           action_id: `${this.interactionType}_confirm_release`,
@@ -260,12 +260,14 @@ module.exports = class Home {
   }
 
   async getReleaseConfirmationBlocksFor(project, branch, type) {
+    const confirmationValue = `${project}x::x${type}x::x${branch}`;
+
     return [
       {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `Are you ready to release a ${type} version of ${project}?`,
+          text: `Are you ready to release a *_${type}_* version of \`${project}\`?`,
         },
       },
       {
@@ -277,7 +279,7 @@ module.exports = class Home {
               type: 'plain_text',
               text: 'Make it so',
             },
-            value: `${project}x::x${type}x::x${branch}`,
+            value: confirmationValue,
             action_id: `${this.interactionType}_release_project`,
             style: 'primary',
           },
@@ -288,7 +290,7 @@ module.exports = class Home {
               text: 'Halt and Abort',
               emoji: true,
             },
-            value: `${project}x::x${type}x::x${branch}`,
+            value: confirmationValue,
             action_id: `${this.interactionType}_cancel`,
             style: 'danger',
           },
@@ -303,7 +305,7 @@ module.exports = class Home {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `Release of ${type} version for ${project} canceled.`,
+          text: `Release of *_${type}_* version for \`${project}\` was canceled.`,
         },
       },
     ];
@@ -316,9 +318,8 @@ module.exports = class Home {
       {
         type: 'section',
         text: {
-          type: 'plain_text',
-          emoji: true,
-          text: `:white_check_mark: Done! ${type} version of ${owner}/${repo} released! :rocket:`,
+          type: 'mrkdwn',
+          text: `:white_check_mark: Done! A *_${type}_* version of \`${owner}/${repo}\` released! :rocket:`,
         },
       },
     ];
