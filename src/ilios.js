@@ -1,4 +1,5 @@
 const { releaseList } = require('../lib/releaseList');
+const { releaseLatest } = require('../lib/releaseLatest');
 const { runTagWorkflow } = require('../lib/runTagWorkflow');
 
 if (!process.env.VALID_RELEASE_USERS) {
@@ -16,6 +17,15 @@ module.exports = class Home {
 
   async getNavigationBlocks() {
     const elements = [
+      {
+        type: 'button',
+        text: {
+          type: 'plain_text',
+          text: 'Latest Release',
+          emoji: true,
+        },
+        action_id: `${this.interactionType}_latest_release_chooser`,
+      },
       {
         type: 'button',
         text: {
@@ -58,7 +68,7 @@ module.exports = class Home {
     ];
   }
 
-  async getReleaseChooserBlocks() {
+  async getReleaseChooserBlocks(latest = null) {
     return [
       {
         type: 'section',
@@ -67,7 +77,9 @@ module.exports = class Home {
           text: 'What project would you like releases for?',
         },
         accessory: {
-          action_id: `${this.interactionType}_list_releases_for`,
+          action_id: latest
+            ? `${this.interactionType}_latest_release_for`
+            : `${this.interactionType}_list_releases_for`,
           type: 'static_select',
           placeholder: {
             type: 'plain_text',
@@ -120,6 +132,23 @@ module.exports = class Home {
           type: 'image',
           image_url: 'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
           alt_text: 'Cat Typing',
+        },
+      },
+    ];
+  }
+
+  async getReleaseLatestBlocksFor(project, name) {
+    const release = await releaseLatest('ilios', project);
+    const link = release.data.html_url;
+    const text = release.data.name;
+    const tag = release.data.tag_name;
+
+    return [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `Latest Release For *${name}*: <${link}|${text}> (${tag})`,
         },
       },
     ];

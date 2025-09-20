@@ -4,6 +4,12 @@ module.exports = class Conversation extends Ilios {
   constructor(app) {
     super(app);
     this.interactionType = 'conversation';
+    app.message(/^latest release/, async ({ say, body, context }) => {
+      this.setDone(context);
+      await this.validateUser(say, body.event.user);
+      const blocks = await this.getReleaseChooserBlocks(true);
+      await say({ blocks });
+    });
     app.message(/^list releases/, async ({ say, body, context }) => {
       this.setDone(context);
       await this.validateUser(say, body.event.user);
@@ -17,7 +23,12 @@ module.exports = class Conversation extends Ilios {
     });
     app.event('app_mention', async ({ event, say, context }) => {
       console.log(event);
-      if (event.text.startsWith('list releases') || event.text.endsWith('list releases')) {
+      if (event.text.startsWith('latest release') || event.text.endsWith('lates      t release')) {
+        this.setDone(context);
+        await this.validateUser(say, event.user);
+        const blocks = await this.getReleaseChooserBlocks(true);
+        await say({ blocks });
+      } else if (event.text.startsWith('list releases') || event.text.endsWith('list releases')) {
         this.setDone(context);
         await this.validateUser(say, event.user);
         const blocks = await this.getReleaseChooserBlocks();
@@ -31,6 +42,20 @@ module.exports = class Conversation extends Ilios {
         await this.sendMenu(event.user, say);
       }
     });
+    app.action(`${this.interactionType}_latest_release_chooser`, async ({ ack, body, respond }) => {
+      await ack();
+      await this.validateUser(respond, body.user.id);
+      const blocks = await this.getReleaseChooserBlocks(true);
+      await respond({ blocks, replace_original: true });
+    });
+    app.action(
+      `${this.interactionType}_latest_release_for`,
+      async ({ action, ack, body, respond }) => {
+        await ack();
+        await this.validateUser(respond, body.user.id);
+        await this.latestReleaseFor(action, respond);
+      },
+    );
     app.action(`${this.interactionType}_list_releases_chooser`, async ({ ack, body, respond }) => {
       await ack();
       await this.validateUser(respond, body.user.id);
@@ -142,6 +167,15 @@ module.exports = class Conversation extends Ilios {
     const name = action.selected_option.text.text;
     await this.showProgressSpinner(respond, `releases for *${name}*`);
     const blocks = await this.getReleaseListBlocksFor(project, name);
+
+    await respond({ blocks, replace_original: true });
+  }
+
+  async latestReleaseFor(action, respond) {
+    const project = action.selected_option.value;
+    const name = action.selected_option.text.text;
+    await this.showProgressSpinner(respond, `latest release for *${name}*`);
+    const blocks = await this.getReleaseLatestBlocksFor(project, name);
 
     await respond({ blocks, replace_original: true });
   }
