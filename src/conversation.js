@@ -23,7 +23,7 @@ module.exports = class Conversation extends Ilios {
     });
     app.event('app_mention', async ({ event, say, context }) => {
       console.log(event);
-      if (event.text.startsWith('latest release') || event.text.endsWith('lates      t release')) {
+      if (event.text.startsWith('latest release') || event.text.endsWith('latest release')) {
         this.setDone(context);
         await this.validateUser(say, event.user);
         const blocks = await this.getReleaseChooserBlocks(true);
