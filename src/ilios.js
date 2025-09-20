@@ -348,7 +348,7 @@ module.exports = class Home {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `:white_check_mark: Done! A *_${type}_* version of \`${owner}/${repo}\` released! :rocket:`,
+          text: `:white_check_mark: Done! A *_${type}_* version of \`${owner}/${repo}\` <https://github.com/${owner}/${repo}/releases/latest|released>! :rocket:`,
         },
       },
     ];
