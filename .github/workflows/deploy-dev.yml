@@ -31,7 +31,7 @@ jobs:
     - name: install dependencies hoisted for lambda
       run: pnpm install --node-linker=hoisted
     - run: pnpm exec serverless package --stage dev
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       with:
         name: dev-zorgbort.zip
         path: ./.serverless/zorgbort.zip
