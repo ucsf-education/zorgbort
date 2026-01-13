@@ -1,6 +1,7 @@
-const { App, AwsLambdaReceiver } = require('@slack/bolt');
-const Home = require('./src/home');
-const Conversation = require('./src/conversation');
+import slackBolt from '@slack/bolt';
+const { App, AwsLambdaReceiver } = slackBolt;
+import Home from './src/home.js';
+import Conversation from './src/conversation.js';
 
 const awsLambdaReceiver = new AwsLambdaReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -24,7 +25,7 @@ try {
   console.error(error);
 }
 
-module.exports.handler = async (event, context, callback) => {
+export async function handler(event, context, callback) {
   const handler = await app.start();
   return handler(event, context, callback);
-};
+}

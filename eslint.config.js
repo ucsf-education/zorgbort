@@ -1,9 +1,9 @@
-const nodePlugin = require('eslint-plugin-n');
-const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
-const mochaPlugin = require('eslint-plugin-mocha');
+import nodePlugin from 'eslint-plugin-n';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import mochaPlugin from 'eslint-plugin-mocha';
 
-module.exports = [
-  nodePlugin.configs['flat/recommended-script'],
+export default [
+  nodePlugin.configs['flat/recommended-module'],
   eslintPluginPrettierRecommended,
   mochaPlugin.configs.flat.recommended,
   {

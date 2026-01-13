@@ -1,12 +1,12 @@
-const { releaseList } = require('../lib/releaseList');
-const { releaseLatest } = require('../lib/releaseLatest');
-const { runTagWorkflow } = require('../lib/runTagWorkflow');
+import { releaseList } from '../lib/releaseList.js';
+import { releaseLatest } from '../lib/releaseLatest.js';
+import { runTagWorkflow } from '../lib/runTagWorkflow.js';
 
 if (!process.env.VALID_RELEASE_USERS) {
   throw new Error('Error: Specify comma separated list of VALID_RELEASE_USERS in environment');
 }
 
-module.exports = class Home {
+export default class Home {
   isHome = false;
   interactionType = null;
 
@@ -353,4 +353,4 @@ module.exports = class Home {
       },
     ];
   }
-};
+}

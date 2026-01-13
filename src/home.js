@@ -1,6 +1,6 @@
-const Ilios = require('./ilios.js');
+import Ilios from './ilios.js';
 
-module.exports = class Home extends Ilios {
+export default class Home extends Ilios {
   isHome = true;
 
   constructor(app) {
@@ -280,4 +280,4 @@ module.exports = class Home extends Ilios {
       },
     });
   }
-};
+}

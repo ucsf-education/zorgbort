@@ -1,4 +1,4 @@
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Generate Unique Release Name', function () {
   beforeEach(function () {
@@ -9,8 +9,8 @@ describe('Generate Unique Release Name', function () {
     delete process.env.GITHUB_TOKEN;
   });
 
-  it('Loads', function () {
-    const uniqueReleaseName = require('../lib/uniqueReleaseName');
+  it('Loads', async function () {
+    const { default: uniqueReleaseName } = await import('../lib/uniqueReleaseName.js');
     assert.ok(uniqueReleaseName);
   });
 });

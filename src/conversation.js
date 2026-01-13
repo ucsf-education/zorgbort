@@ -1,6 +1,6 @@
-const Ilios = require('./ilios.js');
+import Ilios from './ilios.js';
 
-module.exports = class Conversation extends Ilios {
+export default class Conversation extends Ilios {
   constructor(app) {
     super(app);
     this.interactionType = 'conversation';
@@ -211,4 +211,4 @@ module.exports = class Conversation extends Ilios {
     const blocks = await this.doReleaseProjectFor(owner, repo, branch, type);
     await respond({ blocks, replace_original: true });
   }
-};
+}

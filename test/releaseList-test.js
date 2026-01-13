@@ -1,4 +1,4 @@
-var assert = require('assert');
+import assert from 'assert';
 
 describe('Release List', function () {
   beforeEach(function () {
@@ -9,8 +9,8 @@ describe('Release List', function () {
     delete process.env.GITHUB_TOKEN;
   });
 
-  it('Loads', function () {
-    const releaseList = require('../lib/releaseList');
-    assert.ok(releaseList);
+  it('Loads', async function () {
+    const releaseListModule = await import('../lib/releaseList.js');
+    assert.ok(releaseListModule);
   });
 });
