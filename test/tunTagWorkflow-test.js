@@ -1,4 +1,5 @@
-var assert = require('assert');
+import assert from 'assert';
+
 describe('Run Tag workflow', function () {
   beforeEach(function () {
     process.env.GITHUB_TOKEN = 'test';
@@ -8,8 +9,8 @@ describe('Run Tag workflow', function () {
     delete process.env.GITHUB_TOKEN;
   });
 
-  it('Loads', function () {
-    const runtagWorkflow = require('../lib/runTagWorkflow');
+  it('Loads', async function () {
+    const runtagWorkflow = await import('../lib/runTagWorkflow.js');
     assert.ok(runtagWorkflow);
   });
 });
