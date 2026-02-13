@@ -155,11 +155,17 @@ export default class Home {
   }
 
   async getReleaseListBlocksFor(project, name) {
-    const releases = await releaseList('ilios', project);
+    let releases = await releaseList('ilios', project);
 
-    let list = releases.join('\n * ');
-    if (list.length > 2999) {
-      list = list.substr(0, 2000) + '\n\n *List Truncated at Maximum Length*';
+    const MAX_RELEASES_SHOWN = 25;
+
+    let list = releases.map((r) => `<${r.html_url}|${r.name}>`);
+    if (releases.length > MAX_RELEASES_SHOWN) {
+      list.splice(MAX_RELEASES_SHOWN);
+    }
+    list = list.join('\n * ');
+    if (releases.length > MAX_RELEASES_SHOWN) {
+      list += `\n\n *List Truncated*. See <https://github.com/ilios/${project}/releases|full list on Github>.`;
     }
 
     return [
@@ -167,7 +173,7 @@ export default class Home {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `Releases For ${name}:\n * ` + list,
+          text: `Releases For *${name}*:\n * ` + list,
         },
       },
     ];
