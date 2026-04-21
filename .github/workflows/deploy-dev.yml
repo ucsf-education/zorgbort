@@ -22,7 +22,7 @@ jobs:
       SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
     steps:
     - uses: actions/checkout@v6
-    - uses: pnpm/action-setup@v5
+    - uses: pnpm/action-setup@v6
       with:
         version: 9
     - uses: actions/setup-node@v6
