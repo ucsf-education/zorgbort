@@ -46,6 +46,12 @@
   "engines": {
     "node": ">= 24"
   },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.16.0"
+    }
+  },
   "pre-commit": [
     "lint"
   ]
